@@ -15,4 +15,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./auto-install.service"), exports);
+__exportStar(require("./migration.service"), exports);
+__exportStar(require("./dependency-checker.service"), exports);
 //# sourceMappingURL=index.js.map

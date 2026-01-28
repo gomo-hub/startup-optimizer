@@ -12,7 +12,7 @@ import {
     AutoDiscoveryService,
 } from './application/services';
 import { UsageTrackingInterceptor } from './application/interceptors';
-import { AutoInstallService } from './infrastructure/auto-install';
+import { AutoInstallService, MigrationService, DependencyCheckerService } from './infrastructure/auto-install';
 
 const STARTUP_OPTIMIZER_OPTIONS = 'STARTUP_OPTIMIZER_OPTIONS';
 
@@ -53,7 +53,9 @@ export class StartupOptimizerModule {
                     },
                     inject: [TierManagerService, ResourceMonitorService],
                 },
-                AutoInstallService,
+                DependencyCheckerService, // 🔍 Dependency verification
+                MigrationService, // 🔄 Migrations SQL
+                AutoInstallService, // 🔧 Auto-provisioning
                 UsageTrackingInterceptor, // 📊 Tracks all requests for learning
             ],
             exports: [
@@ -102,7 +104,9 @@ export class StartupOptimizerModule {
                     },
                     inject: [STARTUP_OPTIMIZER_OPTIONS, TierManagerService, ResourceMonitorService],
                 },
-                AutoInstallService,
+                DependencyCheckerService, // 🔍 Dependency verification
+                MigrationService, // 🔄 Migrations SQL
+                AutoInstallService, // 🔧 Auto-provisioning
                 UsageTrackingInterceptor, // 📊 Tracks all requests for learning
             ],
             exports: [

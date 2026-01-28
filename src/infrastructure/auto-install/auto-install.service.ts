@@ -1,72 +1,84 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import * as fs from 'fs';
-import * as path from 'path';
+import { DependencyCheckerService } from './dependency-checker.service';
+import { MigrationService } from './migration.service';
 
 /**
- * Handles auto-installation of database schema
+ * AutoInstallService — @gomo-hub/startup-optimizer
+ * 
+ * Ponto de entrada para auto-provisionamento do módulo.
+ * Padrão Enterprise Híbrido: Dependency Check + Migrations.
+ * 
+ * Fluxo:
+ * 1. Verificar dependências (fail-fast)
+ * 2. Executar migrations SQL
+ * 3. Verificar integridade
+ * 
+ * @standard 300.95 - Auto-Install Infrastructure Mandate
  */
 @Injectable()
 export class AutoInstallService implements OnModuleInit {
     private readonly logger = new Logger(AutoInstallService.name);
 
-    constructor(private readonly dataSource: DataSource) { }
+    constructor(
+        private readonly dataSource: DataSource,
+        private readonly dependencyChecker: DependencyCheckerService,
+        private readonly migrationService: MigrationService,
+    ) { }
 
     async onModuleInit(): Promise<void> {
-        await this.runMigrations();
+        await this.install();
     }
 
-    private async runMigrations(): Promise<void> {
-        const migrationsPath = path.join(__dirname, 'migrations');
-
-        if (!fs.existsSync(migrationsPath)) {
-            this.logger.warn('⚠️ No migrations directory found');
-            return;
-        }
-
-        const files = fs.readdirSync(migrationsPath)
-            .filter(f => f.endsWith('.sql'))
-            .sort();
-
-        for (const file of files) {
-            try {
-                const sql = fs.readFileSync(path.join(migrationsPath, file), 'utf8');
-
-                // Check if already executed (simple approach - production would use tracking table)
-                const tableName = this.extractTableName(sql);
-                if (tableName) {
-                    const exists = await this.tableExists(tableName);
-                    if (exists) {
-                        this.logger.debug(`⏭️ Skipping ${file} - table exists`);
-                        continue;
-                    }
-                }
-
-                await this.dataSource.query(sql);
-                this.logger.log(`✅ Executed migration: ${file}`);
-            } catch (error) {
-                this.logger.error(`❌ Migration failed: ${file} - ${error.message}`);
-            }
-        }
-    }
-
-    private extractTableName(sql: string): string | null {
-        const match = sql.match(/CREATE TABLE IF NOT EXISTS (\w+)/i);
-        return match ? match[1] : null;
-    }
-
-    private async tableExists(tableName: string): Promise<boolean> {
+    /**
+     * Executa instalação completa do módulo
+     */
+    async install(): Promise<void> {
         try {
-            const result = await this.dataSource.query(
-                `SELECT EXISTS (
-                    SELECT FROM information_schema.tables 
-                    WHERE table_name = $1
-                )`,
-                [tableName]
-            );
-            return result[0]?.exists || false;
-        } catch {
-            return false;
+            this.logger.log('🚀 StartupOptimizer: Iniciando auto-install...');
+
+            // 1. Verificar dependências (fail-fast)
+            await this.dependencyChecker.verify();
+
+            // 2. Executar migrations
+            await this.migrationService.runMigrations();
+
+            // 3. Verificar integridade
+            await this.verifyIntegrity();
+
+            this.logger.log('✅ StartupOptimizer: Auto-install concluído');
+        } catch (error) {
+            this.logger.error('❌ StartupOptimizer: Erro no auto-install', error);
+            throw error;
         }
+    }
+
+    /**
+     * Verifica integridade pós-instalação
+     */
+    private async verifyIntegrity(): Promise<void> {
+        const status = await this.dependencyChecker.getStatus();
+
+        if (!status.database) {
+            throw new Error('StartupOptimizer: Falha na verificação de integridade');
+        }
+
+        this.logger.debug(`StartupOptimizer: ${status.migrations} migrations aplicadas`);
+    }
+
+    /**
+     * Retorna status completo do módulo
+     */
+    async getStatus(): Promise<{
+        installed: boolean;
+        database: boolean;
+        extensions: string[];
+        migrations: number;
+    }> {
+        const depStatus = await this.dependencyChecker.getStatus();
+        return {
+            installed: depStatus.database,
+            ...depStatus,
+        };
     }
 }

@@ -17,4 +17,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./resource-monitor.service"), exports);
 __exportStar(require("./tier-manager.service"), exports);
 __exportStar(require("./module-orchestrator.service"), exports);
+__exportStar(require("./auto-discovery.service"), exports);
 //# sourceMappingURL=index.js.map

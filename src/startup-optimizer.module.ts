@@ -8,7 +8,8 @@ import { ModuleUsage } from './domain/entities';
 import {
     ResourceMonitorService,
     TierManagerService,
-    ModuleOrchestratorService
+    ModuleOrchestratorService,
+    AutoDiscoveryService,
 } from './application/services';
 import { AutoInstallService } from './infrastructure/auto-install';
 
@@ -33,6 +34,7 @@ export class StartupOptimizerModule {
                 },
                 ResourceMonitorService,
                 TierManagerService,
+                AutoDiscoveryService, // 🔍 Auto-discovers all modules
                 {
                     provide: ModuleOrchestratorService,
                     useFactory: (
@@ -56,6 +58,7 @@ export class StartupOptimizerModule {
                 ModuleOrchestratorService,
                 TierManagerService,
                 ResourceMonitorService,
+                AutoDiscoveryService,
             ],
         };
     }
@@ -78,6 +81,7 @@ export class StartupOptimizerModule {
                 },
                 ResourceMonitorService,
                 TierManagerService,
+                AutoDiscoveryService, // 🔍 Auto-discovers all modules
                 {
                     provide: ModuleOrchestratorService,
                     useFactory: (
@@ -101,6 +105,7 @@ export class StartupOptimizerModule {
                 ModuleOrchestratorService,
                 TierManagerService,
                 ResourceMonitorService,
+                AutoDiscoveryService,
             ],
         };
     }

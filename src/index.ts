@@ -18,4 +18,5 @@ export {
     ModuleOrchestratorService,
     TierManagerService,
     ResourceMonitorService,
+    AutoDiscoveryService,
 } from './application/services';

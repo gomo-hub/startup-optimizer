@@ -28,6 +28,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 },
                 services_1.ResourceMonitorService,
                 services_1.TierManagerService,
+                services_1.AutoDiscoveryService,
                 {
                     provide: services_1.ModuleOrchestratorService,
                     useFactory: (tierManager, resourceMonitor) => {
@@ -43,6 +44,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.ModuleOrchestratorService,
                 services_1.TierManagerService,
                 services_1.ResourceMonitorService,
+                services_1.AutoDiscoveryService,
             ],
         };
     }
@@ -61,6 +63,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 },
                 services_1.ResourceMonitorService,
                 services_1.TierManagerService,
+                services_1.AutoDiscoveryService,
                 {
                     provide: services_1.ModuleOrchestratorService,
                     useFactory: (options, tierManager, resourceMonitor) => {
@@ -76,6 +79,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.ModuleOrchestratorService,
                 services_1.TierManagerService,
                 services_1.ResourceMonitorService,
+                services_1.AutoDiscoveryService,
             ],
         };
     }

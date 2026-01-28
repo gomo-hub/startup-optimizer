@@ -20,3 +20,6 @@ export {
     ResourceMonitorService,
     AutoDiscoveryService,
 } from './application/services';
+
+// Application - Interceptors
+export { UsageTrackingInterceptor } from './application/interceptors';

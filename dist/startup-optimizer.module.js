@@ -12,6 +12,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const entities_1 = require("./domain/entities");
 const services_1 = require("./application/services");
+const interceptors_1 = require("./application/interceptors");
 const auto_install_1 = require("./infrastructure/auto-install");
 const STARTUP_OPTIMIZER_OPTIONS = 'STARTUP_OPTIMIZER_OPTIONS';
 let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerModule {
@@ -39,12 +40,14 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                     inject: [services_1.TierManagerService, services_1.ResourceMonitorService],
                 },
                 auto_install_1.AutoInstallService,
+                interceptors_1.UsageTrackingInterceptor,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
                 services_1.TierManagerService,
                 services_1.ResourceMonitorService,
                 services_1.AutoDiscoveryService,
+                interceptors_1.UsageTrackingInterceptor,
             ],
         };
     }
@@ -74,12 +77,14 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                     inject: [STARTUP_OPTIMIZER_OPTIONS, services_1.TierManagerService, services_1.ResourceMonitorService],
                 },
                 auto_install_1.AutoInstallService,
+                interceptors_1.UsageTrackingInterceptor,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
                 services_1.TierManagerService,
                 services_1.ResourceMonitorService,
                 services_1.AutoDiscoveryService,
+                interceptors_1.UsageTrackingInterceptor,
             ],
         };
     }

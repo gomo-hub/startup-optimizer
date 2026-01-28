@@ -11,6 +11,7 @@ import {
     ModuleOrchestratorService,
     AutoDiscoveryService,
 } from './application/services';
+import { UsageTrackingInterceptor } from './application/interceptors';
 import { AutoInstallService } from './infrastructure/auto-install';
 
 const STARTUP_OPTIMIZER_OPTIONS = 'STARTUP_OPTIMIZER_OPTIONS';
@@ -53,12 +54,14 @@ export class StartupOptimizerModule {
                     inject: [TierManagerService, ResourceMonitorService],
                 },
                 AutoInstallService,
+                UsageTrackingInterceptor, // 📊 Tracks all requests for learning
             ],
             exports: [
                 ModuleOrchestratorService,
                 TierManagerService,
                 ResourceMonitorService,
                 AutoDiscoveryService,
+                UsageTrackingInterceptor,
             ],
         };
     }
@@ -100,12 +103,14 @@ export class StartupOptimizerModule {
                     inject: [STARTUP_OPTIMIZER_OPTIONS, TierManagerService, ResourceMonitorService],
                 },
                 AutoInstallService,
+                UsageTrackingInterceptor, // 📊 Tracks all requests for learning
             ],
             exports: [
                 ModuleOrchestratorService,
                 TierManagerService,
                 ResourceMonitorService,
                 AutoDiscoveryService,
+                UsageTrackingInterceptor,
             ],
         };
     }

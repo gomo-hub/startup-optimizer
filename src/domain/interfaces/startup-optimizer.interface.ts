@@ -62,6 +62,23 @@ export interface ResourceSnapshot {
 }
 
 /**
+ * System-level memory information
+ */
+export interface SystemMemoryInfo {
+    /** Total system RAM in MB */
+    totalMB: number;
+
+    /** Free system RAM in MB */
+    freeMB: number;
+
+    /** Used system RAM in MB */
+    usedMB: number;
+
+    /** Usage percentage (0-100) */
+    usagePercent: number;
+}
+
+/**
  * Configuration for StartupOptimizerModule
  */
 export interface StartupOptimizerOptions {

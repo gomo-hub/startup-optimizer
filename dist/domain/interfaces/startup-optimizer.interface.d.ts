@@ -21,6 +21,12 @@ export interface ResourceSnapshot {
     externalMB: number;
     timestamp: Date;
 }
+export interface SystemMemoryInfo {
+    totalMB: number;
+    freeMB: number;
+    usedMB: number;
+    usagePercent: number;
+}
 export interface StartupOptimizerOptions {
     tiers?: {
         instant?: any[];

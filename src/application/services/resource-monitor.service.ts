@@ -1,14 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ResourceSnapshot } from '../../domain/interfaces';
+import * as os from 'os';
+import { ResourceSnapshot, SystemMemoryInfo } from '../../domain/interfaces';
 
 /**
  * Monitors system resources (CPU, Memory) to make loading decisions
+ * Uses dynamic memory management based on free system RAM
  */
 @Injectable()
 export class ResourceMonitorService {
     private readonly logger = new Logger(ResourceMonitorService.name);
     private snapshots: ResourceSnapshot[] = [];
     private readonly maxSnapshots = 100;
+
+    // Dynamic thresholds (in MB)
+    private readonly HIGH_FREE_MEMORY_MB = 500;  // Above this = aggressive loading
+    private readonly LOW_FREE_MEMORY_MB = 200;   // Below this = conservative loading
 
     /**
      * Get current resource usage
@@ -32,7 +38,38 @@ export class ResourceMonitorService {
     }
 
     /**
-     * Check if system has enough resources to load a module
+     * Get system-level memory information (total and free RAM)
+     */
+    getSystemMemory(): SystemMemoryInfo {
+        const totalMB = Math.round(os.totalmem() / 1024 / 1024);
+        const freeMB = Math.round(os.freemem() / 1024 / 1024);
+        const usedMB = totalMB - freeMB;
+        const usagePercent = Math.round((usedMB / totalMB) * 100);
+
+        return { totalMB, freeMB, usedMB, usagePercent };
+    }
+
+    /**
+     * Calculate dynamic threshold based on available system memory
+     * - Free RAM > 500MB → aggressive loading (threshold 95%)
+     * - Free RAM > 200MB → moderate loading (threshold 85%)
+     * - Free RAM < 200MB → conservative loading (threshold 70%)
+     */
+    calculateDynamicThreshold(): number {
+        const { freeMB } = this.getSystemMemory();
+
+        if (freeMB > this.HIGH_FREE_MEMORY_MB) {
+            return 95; // Plenty of RAM, load aggressively
+        } else if (freeMB > this.LOW_FREE_MEMORY_MB) {
+            return 85; // Moderate RAM, normal loading
+        } else {
+            return 70; // Low RAM, be conservative
+        }
+    }
+
+    /**
+     * Check if system has enough resources to load a module (LEGACY - fixed threshold)
+     * @deprecated Use canLoadModuleDynamic() instead
      */
     canLoadModule(thresholdPercent: number = 80): boolean {
         const current = this.getCurrentUsage();
@@ -41,6 +78,26 @@ export class ResourceMonitorService {
         if (!canLoad) {
             this.logger.warn(
                 `Memory usage at ${current.memoryUsagePercent}% (threshold: ${thresholdPercent}%). Deferring module load.`
+            );
+        }
+
+        return canLoad;
+    }
+
+    /**
+     * Check if system has enough resources to load a module (DYNAMIC)
+     * Uses free system RAM to determine if loading is safe
+     */
+    canLoadModuleDynamic(): boolean {
+        const current = this.getCurrentUsage();
+        const systemMem = this.getSystemMemory();
+        const dynamicThreshold = this.calculateDynamicThreshold();
+        const canLoad = current.memoryUsagePercent < dynamicThreshold;
+
+        if (!canLoad) {
+            this.logger.warn(
+                `⚠️ Memory constrained: Heap ${current.memoryUsagePercent}% (threshold: ${dynamicThreshold}%), ` +
+                `System free: ${systemMem.freeMB}MB. Deferring module load.`
             );
         }
 
@@ -75,12 +132,14 @@ export class ResourceMonitorService {
     }
 
     /**
-     * Log current resource status
+     * Log current resource status (includes system memory)
      */
     logStatus(): void {
         const usage = this.getCurrentUsage();
+        const systemMem = this.getSystemMemory();
         this.logger.log(
-            `📊 Memory: ${usage.heapUsedMB}MB / ${usage.heapTotalMB}MB (${usage.memoryUsagePercent}%)`
+            `📊 Heap: ${usage.heapUsedMB}MB / ${usage.heapTotalMB}MB (${usage.memoryUsagePercent}%) | ` +
+            `System: ${systemMem.freeMB}MB free / ${systemMem.totalMB}MB total`
         );
     }
 

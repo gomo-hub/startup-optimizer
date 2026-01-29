@@ -57,9 +57,8 @@ let ModuleOrchestratorService = ModuleOrchestratorService_1 = class ModuleOrches
             return false;
         }
         if (registration.tier >= interfaces_1.ModuleTier.BACKGROUND) {
-            const threshold = this.options?.memoryThreshold || 80;
-            if (!this.resourceMonitor.canLoadModule(threshold)) {
-                this.logger.warn(`⏳ Deferring ${name}: memory threshold exceeded`);
+            if (!this.resourceMonitor.canLoadModuleDynamic()) {
+                this.logger.warn(`⏳ Deferring ${name}: system memory constrained`);
                 return false;
             }
         }

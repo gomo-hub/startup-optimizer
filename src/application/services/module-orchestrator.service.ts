@@ -81,9 +81,9 @@ export class ModuleOrchestratorService implements OnApplicationBootstrap {
 
         // Resource check (skip for INSTANT/ESSENTIAL)
         if (registration.tier >= ModuleTier.BACKGROUND) {
-            const threshold = this.options?.memoryThreshold || 80;
-            if (!this.resourceMonitor.canLoadModule(threshold)) {
-                this.logger.warn(`⏳ Deferring ${name}: memory threshold exceeded`);
+            // Use dynamic memory management based on free system RAM
+            if (!this.resourceMonitor.canLoadModuleDynamic()) {
+                this.logger.warn(`⏳ Deferring ${name}: system memory constrained`);
                 return false;
             }
         }

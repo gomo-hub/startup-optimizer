@@ -22,6 +22,7 @@ export {
     AutoDiscoveryService,
     PreloadStrategyService,
     UsagePatternService,
+    TierManagementService,
 } from './application/services';
 
 // Service interfaces
@@ -35,6 +36,16 @@ export {
     UsagePatterns,
     ModuleSequence,
 } from './application/services/usage-pattern.service';
+
+export {
+    TierAnalysis,
+    PreloadResponse,
+    PromotionResult,
+    ModuleStatus,
+} from './application/services/tier-management.service';
+
+// Application - Tools (for AI Agents)
+export { TierOptimizerTool, TierOptimizerInput, TierOptimizerResult } from './application/tools';
 
 // Application - Interceptors
 export {

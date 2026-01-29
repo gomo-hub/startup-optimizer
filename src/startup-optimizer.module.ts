@@ -12,8 +12,10 @@ import {
     AutoDiscoveryService,
     PreloadStrategyService,
     UsagePatternService,
+    TierManagementService,
 } from './application/services';
 import { UsageTrackingInterceptor, RuntimeLoaderInterceptor } from './application/interceptors';
+import { TierOptimizerTool } from './application/tools';
 import { AutoInstallService, MigrationService, DependencyCheckerService } from './infrastructure/auto-install';
 import { STARTUP_OPTIMIZER_OPTIONS } from './infrastructure/constants';
 
@@ -61,6 +63,8 @@ export class StartupOptimizerModule {
                 RuntimeLoaderInterceptor, // 🚀 Runtime dynamic loading
                 PreloadStrategyService, // 🎯 AI preloading
                 UsagePatternService, // 📊 Usage pattern analysis
+                TierManagementService, // 🤖 AI agent interface
+                TierOptimizerTool, // 🧠 Tool for AI agents
             ],
             exports: [
                 ModuleOrchestratorService,
@@ -71,6 +75,8 @@ export class StartupOptimizerModule {
                 RuntimeLoaderInterceptor,
                 PreloadStrategyService,
                 UsagePatternService,
+                TierManagementService,
+                TierOptimizerTool,
             ],
         };
     }
@@ -118,6 +124,8 @@ export class StartupOptimizerModule {
                 RuntimeLoaderInterceptor, // 🚀 Runtime dynamic loading
                 PreloadStrategyService, // 🎯 AI preloading
                 UsagePatternService, // 📊 Usage pattern analysis
+                TierManagementService, // 🤖 AI agent interface
+                TierOptimizerTool, // 🧠 Tool for AI agents
             ],
             exports: [
                 ModuleOrchestratorService,
@@ -128,6 +136,8 @@ export class StartupOptimizerModule {
                 RuntimeLoaderInterceptor,
                 PreloadStrategyService,
                 UsagePatternService,
+                TierManagementService,
+                TierOptimizerTool,
             ],
         };
     }

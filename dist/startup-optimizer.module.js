@@ -13,6 +13,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const entities_1 = require("./domain/entities");
 const services_1 = require("./application/services");
 const interceptors_1 = require("./application/interceptors");
+const tools_1 = require("./application/tools");
 const auto_install_1 = require("./infrastructure/auto-install");
 const constants_1 = require("./infrastructure/constants");
 let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerModule {
@@ -46,6 +47,8 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 interceptors_1.RuntimeLoaderInterceptor,
                 services_1.PreloadStrategyService,
                 services_1.UsagePatternService,
+                services_1.TierManagementService,
+                tools_1.TierOptimizerTool,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
@@ -56,6 +59,8 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 interceptors_1.RuntimeLoaderInterceptor,
                 services_1.PreloadStrategyService,
                 services_1.UsagePatternService,
+                services_1.TierManagementService,
+                tools_1.TierOptimizerTool,
             ],
         };
     }
@@ -91,6 +96,8 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 interceptors_1.RuntimeLoaderInterceptor,
                 services_1.PreloadStrategyService,
                 services_1.UsagePatternService,
+                services_1.TierManagementService,
+                tools_1.TierOptimizerTool,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
@@ -101,6 +108,8 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 interceptors_1.RuntimeLoaderInterceptor,
                 services_1.PreloadStrategyService,
                 services_1.UsagePatternService,
+                services_1.TierManagementService,
+                tools_1.TierOptimizerTool,
             ],
         };
     }

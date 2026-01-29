@@ -74,15 +74,18 @@ let ResourceMonitorService = ResourceMonitorService_1 = class ResourceMonitorSer
         return { totalMB, freeMB, usedMB, usagePercent };
     }
     calculateDynamicThreshold() {
-        const { freeMB } = this.getSystemMemory();
-        if (freeMB > this.HIGH_FREE_MEMORY_MB) {
+        const { totalMB, freeMB } = this.getSystemMemory();
+        if (freeMB > 2000) {
+            return 98;
+        }
+        if (totalMB >= 16000) {
+            return 98;
+        }
+        else if (totalMB >= 8000) {
             return 95;
         }
-        else if (freeMB > this.LOW_FREE_MEMORY_MB) {
-            return 85;
-        }
         else {
-            return 70;
+            return 85;
         }
     }
     canLoadModule(thresholdPercent = 80) {

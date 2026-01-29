@@ -50,20 +50,33 @@ export class ResourceMonitorService {
     }
 
     /**
-     * Calculate dynamic threshold based on available system memory
-     * - Free RAM > 500MB → aggressive loading (threshold 95%)
-     * - Free RAM > 200MB → moderate loading (threshold 85%)
-     * - Free RAM < 200MB → conservative loading (threshold 70%)
+     * Calculate dynamic threshold based on system memory
+     * 
+     * NOTE: os.freemem() is misleading on macOS - it shows only "wired inactive" memory,
+     * not including reclaimable cache. On a 32GB Mac, it often shows <100MB "free".
+     * 
+     * Strategy: Use TOTAL system RAM as indicator of capacity:
+     * - Total RAM >= 16GB → aggressive loading (threshold 98%)
+     * - Total RAM >= 8GB  → normal loading (threshold 95%)
+     * - Total RAM < 8GB   → conservative loading (threshold 85%)
+     * 
+     * This ensures modern development machines don't defer modules unnecessarily.
      */
     calculateDynamicThreshold(): number {
-        const { freeMB } = this.getSystemMemory();
+        const { totalMB, freeMB } = this.getSystemMemory();
 
-        if (freeMB > this.HIGH_FREE_MEMORY_MB) {
-            return 95; // Plenty of RAM, load aggressively
-        } else if (freeMB > this.LOW_FREE_MEMORY_MB) {
-            return 85; // Moderate RAM, normal loading
+        // Safety check: if free RAM > 2GB, always allow aggressive loading
+        if (freeMB > 2000) {
+            return 98;
+        }
+
+        // Use total RAM as capacity indicator (macOS freemem is unreliable)
+        if (totalMB >= 16000) {
+            return 98; // 16GB+ RAM - load everything
+        } else if (totalMB >= 8000) {
+            return 95; // 8GB+ RAM - normal loading
         } else {
-            return 70; // Low RAM, be conservative
+            return 85; // <8GB RAM - be somewhat conservative
         }
     }
 

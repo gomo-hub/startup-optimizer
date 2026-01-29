@@ -4,6 +4,10 @@
 -- Description: Creates tables for AI tier decisions and usage patterns
 -- ============================================================================
 
+-- Set correct schema for TypeORM compatibility
+SET search_path TO gomo_hub, public;
+
+
 -- ============================================================
 -- AI TIER DECISIONS TABLE
 -- Stores AI agent decisions about module tier changes

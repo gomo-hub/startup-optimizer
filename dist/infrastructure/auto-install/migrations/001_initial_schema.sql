@@ -4,6 +4,10 @@
 -- Description: Creates module usage tracking table for demand prediction
 -- ============================================================================
 
+-- Set correct schema for TypeORM compatibility
+SET search_path TO gomo_hub, public;
+
+
 -- Tracking table for module usage per tenant
 CREATE TABLE IF NOT EXISTS startup_optimizer_usage (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

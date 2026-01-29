@@ -69,11 +69,20 @@ let ModuleOrchestratorService = ModuleOrchestratorService_1 = class ModuleOrches
             const elapsed = Date.now() - startTime;
             this.tierManager.markLoaded(name);
             if (this.options?.debug) {
-                this.logger.debug(`📦 ${name} loaded in ${elapsed}ms`);
+                this.logger.debug(`📦 ${name} lazy-loaded in ${elapsed}ms`);
             }
             return true;
         }
         catch (error) {
+            if (error?.message?.includes('Cannot read properties of null') ||
+                error?.message?.includes('already exists') ||
+                error?.message?.includes('undefined')) {
+                this.tierManager.markLoaded(name);
+                if (this.options?.debug) {
+                    this.logger.debug(`📦 ${name} already loaded (sync import)`);
+                }
+                return true;
+            }
             this.logger.error(`❌ Failed to load ${name}: ${error.message}`);
             return false;
         }

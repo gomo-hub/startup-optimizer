@@ -138,6 +138,13 @@ export class ModuleOrchestratorService implements OnApplicationBootstrap {
     }
 
     /**
+     * Check if a module is currently loaded
+     */
+    isLoaded(moduleName: string): boolean {
+        return this.tierManager.isLoaded(moduleName);
+    }
+
+    /**
      * Ensure module for a route is loaded
      */
     async ensureLoadedForRoute(route: string): Promise<boolean> {

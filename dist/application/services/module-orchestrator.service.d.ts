@@ -16,6 +16,7 @@ export declare class ModuleOrchestratorService implements OnApplicationBootstrap
     loadTier(tier: ModuleTier): Promise<void>;
     loadModule(registration: ModuleRegistration): Promise<boolean>;
     ensureLoaded(moduleName: string): Promise<boolean>;
+    isLoaded(moduleName: string): boolean;
     ensureLoadedForRoute(route: string): Promise<boolean>;
     private loadBackgroundTier;
     private registerTiers;

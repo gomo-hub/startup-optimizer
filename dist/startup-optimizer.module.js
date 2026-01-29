@@ -14,7 +14,7 @@ const entities_1 = require("./domain/entities");
 const services_1 = require("./application/services");
 const interceptors_1 = require("./application/interceptors");
 const auto_install_1 = require("./infrastructure/auto-install");
-const STARTUP_OPTIMIZER_OPTIONS = 'STARTUP_OPTIMIZER_OPTIONS';
+const constants_1 = require("./infrastructure/constants");
 let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerModule {
     static forRoot(options = {}) {
         return {
@@ -24,7 +24,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
             ],
             providers: [
                 {
-                    provide: STARTUP_OPTIMIZER_OPTIONS,
+                    provide: constants_1.STARTUP_OPTIMIZER_OPTIONS,
                     useValue: options,
                 },
                 services_1.ResourceMonitorService,
@@ -43,6 +43,9 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 auto_install_1.MigrationService,
                 auto_install_1.AutoInstallService,
                 interceptors_1.UsageTrackingInterceptor,
+                interceptors_1.RuntimeLoaderInterceptor,
+                services_1.PreloadStrategyService,
+                services_1.UsagePatternService,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
@@ -50,6 +53,9 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.ResourceMonitorService,
                 services_1.AutoDiscoveryService,
                 interceptors_1.UsageTrackingInterceptor,
+                interceptors_1.RuntimeLoaderInterceptor,
+                services_1.PreloadStrategyService,
+                services_1.UsagePatternService,
             ],
         };
     }
@@ -62,7 +68,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
             ],
             providers: [
                 {
-                    provide: STARTUP_OPTIMIZER_OPTIONS,
+                    provide: constants_1.STARTUP_OPTIMIZER_OPTIONS,
                     useFactory: asyncOptions.useFactory,
                     inject: asyncOptions.inject || [],
                 },
@@ -76,12 +82,15 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                         orchestrator.configure(options);
                         return orchestrator;
                     },
-                    inject: [STARTUP_OPTIMIZER_OPTIONS, services_1.TierManagerService, services_1.ResourceMonitorService],
+                    inject: [constants_1.STARTUP_OPTIMIZER_OPTIONS, services_1.TierManagerService, services_1.ResourceMonitorService],
                 },
                 auto_install_1.DependencyCheckerService,
                 auto_install_1.MigrationService,
                 auto_install_1.AutoInstallService,
                 interceptors_1.UsageTrackingInterceptor,
+                interceptors_1.RuntimeLoaderInterceptor,
+                services_1.PreloadStrategyService,
+                services_1.UsagePatternService,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
@@ -89,6 +98,9 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.ResourceMonitorService,
                 services_1.AutoDiscoveryService,
                 interceptors_1.UsageTrackingInterceptor,
+                interceptors_1.RuntimeLoaderInterceptor,
+                services_1.PreloadStrategyService,
+                services_1.UsagePatternService,
             ],
         };
     }

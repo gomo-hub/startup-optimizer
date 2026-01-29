@@ -18,4 +18,6 @@ __exportStar(require("./resource-monitor.service"), exports);
 __exportStar(require("./tier-manager.service"), exports);
 __exportStar(require("./module-orchestrator.service"), exports);
 __exportStar(require("./auto-discovery.service"), exports);
+__exportStar(require("./preload-strategy.service"), exports);
+__exportStar(require("./usage-pattern.service"), exports);
 //# sourceMappingURL=index.js.map

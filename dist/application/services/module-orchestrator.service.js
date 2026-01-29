@@ -97,6 +97,9 @@ let ModuleOrchestratorService = ModuleOrchestratorService_1 = class ModuleOrches
         }
         return this.loadModule(registration);
     }
+    isLoaded(moduleName) {
+        return this.tierManager.isLoaded(moduleName);
+    }
     async ensureLoadedForRoute(route) {
         const registration = this.tierManager.getModuleByRoute(route);
         if (!registration) {

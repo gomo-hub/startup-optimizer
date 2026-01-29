@@ -10,11 +10,12 @@ import {
     TierManagerService,
     ModuleOrchestratorService,
     AutoDiscoveryService,
+    PreloadStrategyService,
+    UsagePatternService,
 } from './application/services';
-import { UsageTrackingInterceptor } from './application/interceptors';
+import { UsageTrackingInterceptor, RuntimeLoaderInterceptor } from './application/interceptors';
 import { AutoInstallService, MigrationService, DependencyCheckerService } from './infrastructure/auto-install';
-
-const STARTUP_OPTIMIZER_OPTIONS = 'STARTUP_OPTIMIZER_OPTIONS';
+import { STARTUP_OPTIMIZER_OPTIONS } from './infrastructure/constants';
 
 @Global()
 @Module({})
@@ -57,6 +58,9 @@ export class StartupOptimizerModule {
                 MigrationService, // 🔄 Migrations SQL
                 AutoInstallService, // 🔧 Auto-provisioning
                 UsageTrackingInterceptor, // 📊 Tracks all requests for learning
+                RuntimeLoaderInterceptor, // 🚀 Runtime dynamic loading
+                PreloadStrategyService, // 🎯 AI preloading
+                UsagePatternService, // 📊 Usage pattern analysis
             ],
             exports: [
                 ModuleOrchestratorService,
@@ -64,6 +68,9 @@ export class StartupOptimizerModule {
                 ResourceMonitorService,
                 AutoDiscoveryService,
                 UsageTrackingInterceptor,
+                RuntimeLoaderInterceptor,
+                PreloadStrategyService,
+                UsagePatternService,
             ],
         };
     }
@@ -108,6 +115,9 @@ export class StartupOptimizerModule {
                 MigrationService, // 🔄 Migrations SQL
                 AutoInstallService, // 🔧 Auto-provisioning
                 UsageTrackingInterceptor, // 📊 Tracks all requests for learning
+                RuntimeLoaderInterceptor, // 🚀 Runtime dynamic loading
+                PreloadStrategyService, // 🎯 AI preloading
+                UsagePatternService, // 📊 Usage pattern analysis
             ],
             exports: [
                 ModuleOrchestratorService,
@@ -115,6 +125,9 @@ export class StartupOptimizerModule {
                 ResourceMonitorService,
                 AutoDiscoveryService,
                 UsageTrackingInterceptor,
+                RuntimeLoaderInterceptor,
+                PreloadStrategyService,
+                UsagePatternService,
             ],
         };
     }

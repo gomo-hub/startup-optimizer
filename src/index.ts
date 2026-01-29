@@ -6,6 +6,7 @@ export {
     ModuleTier,
     ModuleRegistration,
     ResourceSnapshot,
+    SystemMemoryInfo,
     StartupOptimizerOptions,
     StartupOptimizerAsyncOptions,
 } from './domain/interfaces';
@@ -19,7 +20,27 @@ export {
     TierManagerService,
     ResourceMonitorService,
     AutoDiscoveryService,
+    PreloadStrategyService,
+    UsagePatternService,
 } from './application/services';
 
+// Service interfaces
+export {
+    PreloadResult,
+    PreloadMetrics,
+} from './application/services/preload-strategy.service';
+
+export {
+    ModuleUsageStats,
+    UsagePatterns,
+    ModuleSequence,
+} from './application/services/usage-pattern.service';
+
 // Application - Interceptors
-export { UsageTrackingInterceptor } from './application/interceptors';
+export {
+    UsageTrackingInterceptor,
+    RuntimeLoaderInterceptor,
+} from './application/interceptors';
+
+// Constants
+export { STARTUP_OPTIMIZER_OPTIONS } from './infrastructure/constants';

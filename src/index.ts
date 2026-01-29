@@ -12,7 +12,7 @@ export {
 } from './domain/interfaces';
 
 // Domain - Entities
-export { ModuleUsage } from './domain/entities';
+export { ModuleUsage, TierDecision, UsagePattern } from './domain/entities';
 
 // Application - Services
 export {
@@ -52,6 +52,9 @@ export {
     UsageTrackingInterceptor,
     RuntimeLoaderInterceptor,
 } from './application/interceptors';
+
+// Infrastructure - Persistence
+export { PersistenceService } from './infrastructure/persistence';
 
 // Constants
 export { STARTUP_OPTIMIZER_OPTIONS } from './infrastructure/constants';

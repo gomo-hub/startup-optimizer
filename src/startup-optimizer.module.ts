@@ -4,7 +4,7 @@ import {
     StartupOptimizerOptions,
     StartupOptimizerAsyncOptions
 } from './domain/interfaces';
-import { ModuleUsage } from './domain/entities';
+import { ModuleUsage, TierDecision, UsagePattern } from './domain/entities';
 import {
     ResourceMonitorService,
     TierManagerService,
@@ -17,6 +17,7 @@ import {
 import { UsageTrackingInterceptor, RuntimeLoaderInterceptor } from './application/interceptors';
 import { TierOptimizerTool } from './application/tools';
 import { AutoInstallService, MigrationService, DependencyCheckerService } from './infrastructure/auto-install';
+import { PersistenceService } from './infrastructure/persistence';
 import { STARTUP_OPTIMIZER_OPTIONS } from './infrastructure/constants';
 
 @Global()
@@ -29,7 +30,7 @@ export class StartupOptimizerModule {
         return {
             module: StartupOptimizerModule,
             imports: [
-                TypeOrmModule.forFeature([ModuleUsage]),
+                TypeOrmModule.forFeature([ModuleUsage, TierDecision, UsagePattern]),
             ],
             providers: [
                 {
@@ -65,6 +66,7 @@ export class StartupOptimizerModule {
                 UsagePatternService, // 📊 Usage pattern analysis
                 TierManagementService, // 🤖 AI agent interface
                 TierOptimizerTool, // 🧠 Tool for AI agents
+                PersistenceService, // 💾 Database persistence
             ],
             exports: [
                 ModuleOrchestratorService,
@@ -77,6 +79,7 @@ export class StartupOptimizerModule {
                 UsagePatternService,
                 TierManagementService,
                 TierOptimizerTool,
+                PersistenceService,
             ],
         };
     }
@@ -89,7 +92,7 @@ export class StartupOptimizerModule {
             module: StartupOptimizerModule,
             imports: [
                 ...(asyncOptions.imports || []),
-                TypeOrmModule.forFeature([ModuleUsage]),
+                TypeOrmModule.forFeature([ModuleUsage, TierDecision, UsagePattern]),
             ],
             providers: [
                 {
@@ -126,6 +129,7 @@ export class StartupOptimizerModule {
                 UsagePatternService, // 📊 Usage pattern analysis
                 TierManagementService, // 🤖 AI agent interface
                 TierOptimizerTool, // 🧠 Tool for AI agents
+                PersistenceService, // 💾 Database persistence
             ],
             exports: [
                 ModuleOrchestratorService,
@@ -138,6 +142,7 @@ export class StartupOptimizerModule {
                 UsagePatternService,
                 TierManagementService,
                 TierOptimizerTool,
+                PersistenceService,
             ],
         };
     }

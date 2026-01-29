@@ -1,10 +1,11 @@
 export { StartupOptimizerModule } from './startup-optimizer.module';
 export { ModuleTier, ModuleRegistration, ResourceSnapshot, SystemMemoryInfo, StartupOptimizerOptions, StartupOptimizerAsyncOptions, } from './domain/interfaces';
-export { ModuleUsage } from './domain/entities';
+export { ModuleUsage, TierDecision, UsagePattern } from './domain/entities';
 export { ModuleOrchestratorService, TierManagerService, ResourceMonitorService, AutoDiscoveryService, PreloadStrategyService, UsagePatternService, TierManagementService, } from './application/services';
 export { PreloadResult, PreloadMetrics, } from './application/services/preload-strategy.service';
 export { ModuleUsageStats, UsagePatterns, ModuleSequence, } from './application/services/usage-pattern.service';
 export { TierAnalysis, PreloadResponse, PromotionResult, ModuleStatus, } from './application/services/tier-management.service';
 export { TierOptimizerTool, TierOptimizerInput, TierOptimizerResult } from './application/tools';
 export { UsageTrackingInterceptor, RuntimeLoaderInterceptor, } from './application/interceptors';
+export { PersistenceService } from './infrastructure/persistence';
 export { STARTUP_OPTIMIZER_OPTIONS } from './infrastructure/constants';

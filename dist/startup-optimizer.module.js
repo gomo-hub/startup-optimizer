@@ -15,13 +15,14 @@ const services_1 = require("./application/services");
 const interceptors_1 = require("./application/interceptors");
 const tools_1 = require("./application/tools");
 const auto_install_1 = require("./infrastructure/auto-install");
+const persistence_1 = require("./infrastructure/persistence");
 const constants_1 = require("./infrastructure/constants");
 let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerModule {
     static forRoot(options = {}) {
         return {
             module: StartupOptimizerModule_1,
             imports: [
-                typeorm_1.TypeOrmModule.forFeature([entities_1.ModuleUsage]),
+                typeorm_1.TypeOrmModule.forFeature([entities_1.ModuleUsage, entities_1.TierDecision, entities_1.UsagePattern]),
             ],
             providers: [
                 {
@@ -49,6 +50,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.UsagePatternService,
                 services_1.TierManagementService,
                 tools_1.TierOptimizerTool,
+                persistence_1.PersistenceService,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
@@ -61,6 +63,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.UsagePatternService,
                 services_1.TierManagementService,
                 tools_1.TierOptimizerTool,
+                persistence_1.PersistenceService,
             ],
         };
     }
@@ -69,7 +72,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
             module: StartupOptimizerModule_1,
             imports: [
                 ...(asyncOptions.imports || []),
-                typeorm_1.TypeOrmModule.forFeature([entities_1.ModuleUsage]),
+                typeorm_1.TypeOrmModule.forFeature([entities_1.ModuleUsage, entities_1.TierDecision, entities_1.UsagePattern]),
             ],
             providers: [
                 {
@@ -98,6 +101,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.UsagePatternService,
                 services_1.TierManagementService,
                 tools_1.TierOptimizerTool,
+                persistence_1.PersistenceService,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
@@ -110,6 +114,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.UsagePatternService,
                 services_1.TierManagementService,
                 tools_1.TierOptimizerTool,
+                persistence_1.PersistenceService,
             ],
         };
     }

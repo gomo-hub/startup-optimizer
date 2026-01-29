@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STARTUP_OPTIMIZER_OPTIONS = exports.RuntimeLoaderInterceptor = exports.UsageTrackingInterceptor = exports.TierOptimizerTool = exports.TierManagementService = exports.UsagePatternService = exports.PreloadStrategyService = exports.AutoDiscoveryService = exports.ResourceMonitorService = exports.TierManagerService = exports.ModuleOrchestratorService = exports.ModuleUsage = exports.ModuleTier = exports.StartupOptimizerModule = void 0;
+exports.STARTUP_OPTIMIZER_OPTIONS = exports.PersistenceService = exports.RuntimeLoaderInterceptor = exports.UsageTrackingInterceptor = exports.TierOptimizerTool = exports.TierManagementService = exports.UsagePatternService = exports.PreloadStrategyService = exports.AutoDiscoveryService = exports.ResourceMonitorService = exports.TierManagerService = exports.ModuleOrchestratorService = exports.UsagePattern = exports.TierDecision = exports.ModuleUsage = exports.ModuleTier = exports.StartupOptimizerModule = void 0;
 var startup_optimizer_module_1 = require("./startup-optimizer.module");
 Object.defineProperty(exports, "StartupOptimizerModule", { enumerable: true, get: function () { return startup_optimizer_module_1.StartupOptimizerModule; } });
 var interfaces_1 = require("./domain/interfaces");
 Object.defineProperty(exports, "ModuleTier", { enumerable: true, get: function () { return interfaces_1.ModuleTier; } });
 var entities_1 = require("./domain/entities");
 Object.defineProperty(exports, "ModuleUsage", { enumerable: true, get: function () { return entities_1.ModuleUsage; } });
+Object.defineProperty(exports, "TierDecision", { enumerable: true, get: function () { return entities_1.TierDecision; } });
+Object.defineProperty(exports, "UsagePattern", { enumerable: true, get: function () { return entities_1.UsagePattern; } });
 var services_1 = require("./application/services");
 Object.defineProperty(exports, "ModuleOrchestratorService", { enumerable: true, get: function () { return services_1.ModuleOrchestratorService; } });
 Object.defineProperty(exports, "TierManagerService", { enumerable: true, get: function () { return services_1.TierManagerService; } });
@@ -20,6 +22,8 @@ Object.defineProperty(exports, "TierOptimizerTool", { enumerable: true, get: fun
 var interceptors_1 = require("./application/interceptors");
 Object.defineProperty(exports, "UsageTrackingInterceptor", { enumerable: true, get: function () { return interceptors_1.UsageTrackingInterceptor; } });
 Object.defineProperty(exports, "RuntimeLoaderInterceptor", { enumerable: true, get: function () { return interceptors_1.RuntimeLoaderInterceptor; } });
+var persistence_1 = require("./infrastructure/persistence");
+Object.defineProperty(exports, "PersistenceService", { enumerable: true, get: function () { return persistence_1.PersistenceService; } });
 var constants_1 = require("./infrastructure/constants");
 Object.defineProperty(exports, "STARTUP_OPTIMIZER_OPTIONS", { enumerable: true, get: function () { return constants_1.STARTUP_OPTIMIZER_OPTIONS; } });
 //# sourceMappingURL=index.js.map

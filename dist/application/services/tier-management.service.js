@@ -18,12 +18,15 @@ const common_1 = require("@nestjs/common");
 const module_orchestrator_service_1 = require("./module-orchestrator.service");
 const preload_strategy_service_1 = require("./preload-strategy.service");
 const usage_pattern_service_1 = require("./usage-pattern.service");
+const tier_manager_service_1 = require("./tier-manager.service");
 const constants_1 = require("../../infrastructure/constants");
+const interfaces_1 = require("../../domain/interfaces");
 let TierManagementService = TierManagementService_1 = class TierManagementService {
-    constructor(orchestrator, preloadStrategy, usagePatterns, options) {
+    constructor(orchestrator, preloadStrategy, usagePatterns, tierManager, options) {
         this.orchestrator = orchestrator;
         this.preloadStrategy = preloadStrategy;
         this.usagePatterns = usagePatterns;
+        this.tierManager = tierManager;
         this.options = options;
         this.logger = new common_1.Logger(TierManagementService_1.name);
     }
@@ -98,10 +101,40 @@ let TierManagementService = TierManagementService_1 = class TierManagementServic
         };
     }
     getAllModuleStatuses() {
-        const allStats = this.usagePatterns.getAllStats();
         const statuses = [];
-        for (const [moduleName, stats] of allStats.entries()) {
-            statuses.push(this.getModuleStatus(moduleName));
+        const usageStats = this.usagePatterns.getAllStats();
+        const tierStats = this.tierManager.getStats();
+        if (tierStats.total > 0) {
+            const allModules = this.tierManager.getUnloadedModules()
+                .concat([...Array.from({ length: tierStats.loaded }, (_, i) => ({ name: `loaded-${i}` }))]);
+            for (const [moduleName] of usageStats.entries()) {
+                statuses.push(this.getModuleStatus(moduleName));
+            }
+            for (const tierName of ['INSTANT', 'ESSENTIAL', 'BACKGROUND', 'LAZY', 'DORMANT']) {
+                const tier = interfaces_1.ModuleTier[tierName];
+                if (typeof tier === 'number') {
+                    const modulesInTier = this.tierManager.getModulesByTier(tier);
+                    for (const mod of modulesInTier) {
+                        if (!statuses.find(s => s.moduleName === mod.name)) {
+                            statuses.push({
+                                moduleName: mod.name,
+                                isLoaded: mod.loaded || false,
+                                tier: tierName,
+                                stats: usageStats.get(mod.name) ? {
+                                    totalAccesses: usageStats.get(mod.name).totalAccesses,
+                                    avgResponseTimeMs: usageStats.get(mod.name).avgResponseTimeMs,
+                                    lastAccessedAt: usageStats.get(mod.name).lastAccessedAt,
+                                } : null,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            for (const [moduleName] of usageStats.entries()) {
+                statuses.push(this.getModuleStatus(moduleName));
+            }
         }
         return statuses;
     }
@@ -156,16 +189,21 @@ ${this.generateRecommendations(analysis).map(r => `- ${r}`).join('\n')}
         return recommendations;
     }
     inferTier(moduleName) {
+        const registration = this.tierManager.getModule(moduleName);
+        if (registration) {
+            return interfaces_1.ModuleTier[registration.tier] || 'BACKGROUND';
+        }
         return this.orchestrator.isLoaded(moduleName) ? 'LOADED' : 'NOT_LOADED';
     }
 };
 exports.TierManagementService = TierManagementService;
 exports.TierManagementService = TierManagementService = TierManagementService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __param(3, (0, common_1.Optional)()),
-    __param(3, (0, common_1.Inject)(constants_1.STARTUP_OPTIMIZER_OPTIONS)),
+    __param(4, (0, common_1.Optional)()),
+    __param(4, (0, common_1.Inject)(constants_1.STARTUP_OPTIMIZER_OPTIONS)),
     __metadata("design:paramtypes", [module_orchestrator_service_1.ModuleOrchestratorService,
         preload_strategy_service_1.PreloadStrategyService,
-        usage_pattern_service_1.UsagePatternService, Object])
+        usage_pattern_service_1.UsagePatternService,
+        tier_manager_service_1.TierManagerService, Object])
 ], TierManagementService);
 //# sourceMappingURL=tier-management.service.js.map

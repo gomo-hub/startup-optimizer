@@ -1,14 +1,16 @@
 import { ModuleOrchestratorService } from './module-orchestrator.service';
 import { PreloadStrategyService } from './preload-strategy.service';
 import { UsagePatternService, UsagePatterns } from './usage-pattern.service';
+import { TierManagerService } from './tier-manager.service';
 import { StartupOptimizerOptions } from '../../domain/interfaces';
 export declare class TierManagementService {
     private readonly orchestrator;
     private readonly preloadStrategy;
     private readonly usagePatterns;
+    private readonly tierManager;
     private readonly options?;
     private readonly logger;
-    constructor(orchestrator: ModuleOrchestratorService, preloadStrategy: PreloadStrategyService, usagePatterns: UsagePatternService, options?: StartupOptimizerOptions | undefined);
+    constructor(orchestrator: ModuleOrchestratorService, preloadStrategy: PreloadStrategyService, usagePatterns: UsagePatternService, tierManager: TierManagerService, options?: StartupOptimizerOptions | undefined);
     analyzePatterns(): Promise<TierAnalysis>;
     preloadModules(moduleNames: string[]): Promise<PreloadResponse>;
     promoteModule(moduleName: string): Promise<PromotionResult>;

@@ -2,8 +2,9 @@ import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { ModuleOrchestratorService } from './module-orchestrator.service';
 import { PreloadStrategyService } from './preload-strategy.service';
 import { UsagePatternService, UsagePatterns } from './usage-pattern.service';
+import { TierManagerService } from './tier-manager.service';
 import { STARTUP_OPTIMIZER_OPTIONS } from '../../infrastructure/constants';
-import { StartupOptimizerOptions } from '../../domain/interfaces';
+import { StartupOptimizerOptions, ModuleTier } from '../../domain/interfaces';
 
 /**
  * 🤖 Tier Management Service for AI Agents
@@ -24,6 +25,7 @@ export class TierManagementService {
         private readonly orchestrator: ModuleOrchestratorService,
         private readonly preloadStrategy: PreloadStrategyService,
         private readonly usagePatterns: UsagePatternService,
+        private readonly tierManager: TierManagerService,
         @Optional() @Inject(STARTUP_OPTIMIZER_OPTIONS)
         private readonly options?: StartupOptimizerOptions,
     ) { }
@@ -130,13 +132,50 @@ export class TierManagementService {
 
     /**
      * Get all module statuses
+     * Uses TierManagerService registry (discovered modules) merged with usage stats
      */
     getAllModuleStatuses(): ModuleStatus[] {
-        const allStats = this.usagePatterns.getAllStats();
         const statuses: ModuleStatus[] = [];
+        const usageStats = this.usagePatterns.getAllStats();
+        const tierStats = this.tierManager.getStats();
 
-        for (const [moduleName, stats] of allStats.entries()) {
-            statuses.push(this.getModuleStatus(moduleName));
+        // If TierManager has discovered modules, use those
+        if (tierStats.total > 0) {
+            // Get all registered modules from TierManager
+            const allModules = this.tierManager.getUnloadedModules()
+                .concat([...Array.from({ length: tierStats.loaded }, (_, i) => ({ name: `loaded-${i}` }))] as any);
+
+            // Actually iterate the Map keys from registry via getModule checks
+            for (const [moduleName] of usageStats.entries()) {
+                statuses.push(this.getModuleStatus(moduleName));
+            }
+
+            // Also include modules discovered but not yet accessed
+            for (const tierName of ['INSTANT', 'ESSENTIAL', 'BACKGROUND', 'LAZY', 'DORMANT']) {
+                const tier = ModuleTier[tierName as keyof typeof ModuleTier];
+                if (typeof tier === 'number') {
+                    const modulesInTier = this.tierManager.getModulesByTier(tier);
+                    for (const mod of modulesInTier) {
+                        if (!statuses.find(s => s.moduleName === mod.name)) {
+                            statuses.push({
+                                moduleName: mod.name,
+                                isLoaded: mod.loaded || false,
+                                tier: tierName,
+                                stats: usageStats.get(mod.name) ? {
+                                    totalAccesses: usageStats.get(mod.name)!.totalAccesses,
+                                    avgResponseTimeMs: usageStats.get(mod.name)!.avgResponseTimeMs,
+                                    lastAccessedAt: usageStats.get(mod.name)!.lastAccessedAt,
+                                } : null,
+                            });
+                        }
+                    }
+                }
+            }
+        } else {
+            // Fallback: only modules with usage data
+            for (const [moduleName] of usageStats.entries()) {
+                statuses.push(this.getModuleStatus(moduleName));
+            }
         }
 
         return statuses;
@@ -225,7 +264,12 @@ ${this.generateRecommendations(analysis).map(r => `- ${r}`).join('\n')}
      * Infer current tier of a module (from config or runtime state)
      */
     private inferTier(moduleName: string): string {
-        // For now, just check if loaded
+        // Check TierManager registry first
+        const registration = this.tierManager.getModule(moduleName);
+        if (registration) {
+            return ModuleTier[registration.tier] || 'BACKGROUND';
+        }
+        // Fallback
         return this.orchestrator.isLoaded(moduleName) ? 'LOADED' : 'NOT_LOADED';
     }
 }

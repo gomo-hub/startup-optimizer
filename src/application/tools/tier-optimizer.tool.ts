@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TierManagementService, TierAnalysis, PreloadResponse, PromotionResult } from '../services/tier-management.service';
+import { PersistenceService } from '../../infrastructure/persistence';
 
 /**
  * 🤖 Tier Optimizer Tool for AI Agents
@@ -12,6 +13,8 @@ import { TierManagementService, TierAnalysis, PreloadResponse, PromotionResult }
  * - "preload_modules" - Preload specific modules
  * - "promote_module" - Load a LAZY/DORMANT module immediately
  * - "get_context" - Get optimization context for LLM
+ * - "get_status" - Get module status(es)
+ * - "get_effectiveness" - Get AI decision effectiveness stats
  */
 @Injectable()
 export class TierOptimizerTool {
@@ -25,7 +28,7 @@ export class TierOptimizerTool {
         properties: {
             action: {
                 type: 'string',
-                enum: ['analyze_patterns', 'preload_modules', 'promote_module', 'get_context', 'get_status'],
+                enum: ['analyze_patterns', 'preload_modules', 'promote_module', 'get_context', 'get_status', 'get_effectiveness'],
                 description: 'Action to perform',
             },
             moduleNames: {
@@ -36,6 +39,14 @@ export class TierOptimizerTool {
             moduleName: {
                 type: 'string',
                 description: 'Single module name for promote/status action',
+            },
+            reason: {
+                type: 'string',
+                description: 'Reason for the action (stored for learning)',
+            },
+            confidence: {
+                type: 'number',
+                description: 'Confidence level 0-100 for the decision',
             },
         },
         required: ['action'],
@@ -54,6 +65,7 @@ export class TierOptimizerTool {
 
     constructor(
         private readonly tierManagement: TierManagementService,
+        private readonly persistence: PersistenceService,
     ) { }
 
     /**
@@ -62,6 +74,7 @@ export class TierOptimizerTool {
      */
     async execute(input: TierOptimizerInput, context?: any): Promise<TierOptimizerResult> {
         const startTime = Date.now();
+        const agentId = context?.agentId || 'unknown';
 
         try {
             let result: any;
@@ -76,6 +89,18 @@ export class TierOptimizerTool {
                         throw new Error('moduleNames required for preload action');
                     }
                     result = await this.tierManagement.preloadModules(input.moduleNames);
+
+                    // Record AI decisions for learning
+                    for (const moduleName of input.moduleNames) {
+                        await this.persistence.recordDecision({
+                            moduleName,
+                            toTier: 'PRELOADED',
+                            decisionType: 'PRELOAD',
+                            agentId,
+                            reason: input.reason || 'AI agent preload decision',
+                            confidence: input.confidence || 70,
+                        });
+                    }
                     break;
 
                 case 'promote_module':
@@ -83,6 +108,18 @@ export class TierOptimizerTool {
                         throw new Error('moduleName required for promote action');
                     }
                     result = await this.tierManagement.promoteModule(input.moduleName);
+
+                    // Record decision
+                    if (result.success) {
+                        await this.persistence.recordDecision({
+                            moduleName: input.moduleName,
+                            toTier: 'PROMOTED',
+                            decisionType: 'PROMOTE',
+                            agentId,
+                            reason: input.reason || 'AI agent promotion decision',
+                            confidence: input.confidence || 75,
+                        });
+                    }
                     break;
 
                 case 'get_context':
@@ -95,6 +132,10 @@ export class TierOptimizerTool {
                     } else {
                         result = this.tierManagement.getAllModuleStatuses();
                     }
+                    break;
+
+                case 'get_effectiveness':
+                    result = await this.persistence.getDecisionEffectiveness();
                     break;
 
                 default:
@@ -120,9 +161,11 @@ export class TierOptimizerTool {
 
 // Input/Output types
 export interface TierOptimizerInput {
-    action: 'analyze_patterns' | 'preload_modules' | 'promote_module' | 'get_context' | 'get_status';
+    action: 'analyze_patterns' | 'preload_modules' | 'promote_module' | 'get_context' | 'get_status' | 'get_effectiveness';
     moduleNames?: string[];
     moduleName?: string;
+    reason?: string;
+    confidence?: number;
 }
 
 export interface TierOptimizerResult {
@@ -133,3 +176,4 @@ export interface TierOptimizerResult {
     cost?: number;
     metadata?: Record<string, any>;
 }
+

@@ -1,6 +1,8 @@
 import { TierManagementService, TierAnalysis, PreloadResponse, PromotionResult } from '../services/tier-management.service';
+import { PersistenceService } from '../../infrastructure/persistence';
 export declare class TierOptimizerTool {
     private readonly tierManagement;
+    private readonly persistence;
     readonly name = "tier_optimizer";
     readonly displayName = "Tier Optimizer";
     readonly description = "Manage module loading tiers dynamically. Analyze usage patterns, preload predicted modules, and promote LAZY modules to immediate loading.";
@@ -24,6 +26,14 @@ export declare class TierOptimizerTool {
                 type: string;
                 description: string;
             };
+            reason: {
+                type: string;
+                description: string;
+            };
+            confidence: {
+                type: string;
+                description: string;
+            };
         };
         required: string[];
     };
@@ -42,13 +52,15 @@ export declare class TierOptimizerTool {
         };
     };
     private readonly logger;
-    constructor(tierManagement: TierManagementService);
+    constructor(tierManagement: TierManagementService, persistence: PersistenceService);
     execute(input: TierOptimizerInput, context?: any): Promise<TierOptimizerResult>;
 }
 export interface TierOptimizerInput {
-    action: 'analyze_patterns' | 'preload_modules' | 'promote_module' | 'get_context' | 'get_status';
+    action: 'analyze_patterns' | 'preload_modules' | 'promote_module' | 'get_context' | 'get_status' | 'get_effectiveness';
     moduleNames?: string[];
     moduleName?: string;
+    reason?: string;
+    confidence?: number;
 }
 export interface TierOptimizerResult {
     success: boolean;

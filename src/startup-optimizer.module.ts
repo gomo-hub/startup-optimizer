@@ -16,6 +16,8 @@ import {
 } from './application/services';
 import { UsageTrackingInterceptor, RuntimeLoaderInterceptor } from './application/interceptors';
 import { TierOptimizerTool } from './application/tools';
+import { StartupOptimizerAdminController } from './application/controllers';
+import { OptimizerSchedulerService } from './application/schedulers';
 import { AutoInstallService, MigrationService, DependencyCheckerService } from './infrastructure/auto-install';
 import { PersistenceService } from './infrastructure/persistence';
 import { STARTUP_OPTIMIZER_OPTIONS } from './infrastructure/constants';
@@ -67,6 +69,10 @@ export class StartupOptimizerModule {
                 TierManagementService, // 🤖 AI agent interface
                 TierOptimizerTool, // 🧠 Tool for AI agents
                 PersistenceService, // 💾 Database persistence
+                OptimizerSchedulerService, // ⏰ Cron jobs
+            ],
+            controllers: [
+                StartupOptimizerAdminController, // 📊 Admin dashboard
             ],
             exports: [
                 ModuleOrchestratorService,
@@ -80,6 +86,7 @@ export class StartupOptimizerModule {
                 TierManagementService,
                 TierOptimizerTool,
                 PersistenceService,
+                OptimizerSchedulerService,
             ],
         };
     }
@@ -130,6 +137,10 @@ export class StartupOptimizerModule {
                 TierManagementService, // 🤖 AI agent interface
                 TierOptimizerTool, // 🧠 Tool for AI agents
                 PersistenceService, // 💾 Database persistence
+                OptimizerSchedulerService, // ⏰ Cron jobs
+            ],
+            controllers: [
+                StartupOptimizerAdminController, // 📊 Admin dashboard
             ],
             exports: [
                 ModuleOrchestratorService,
@@ -143,6 +154,7 @@ export class StartupOptimizerModule {
                 TierManagementService,
                 TierOptimizerTool,
                 PersistenceService,
+                OptimizerSchedulerService,
             ],
         };
     }

@@ -14,6 +14,8 @@ const entities_1 = require("./domain/entities");
 const services_1 = require("./application/services");
 const interceptors_1 = require("./application/interceptors");
 const tools_1 = require("./application/tools");
+const controllers_1 = require("./application/controllers");
+const schedulers_1 = require("./application/schedulers");
 const auto_install_1 = require("./infrastructure/auto-install");
 const persistence_1 = require("./infrastructure/persistence");
 const constants_1 = require("./infrastructure/constants");
@@ -51,6 +53,10 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.TierManagementService,
                 tools_1.TierOptimizerTool,
                 persistence_1.PersistenceService,
+                schedulers_1.OptimizerSchedulerService,
+            ],
+            controllers: [
+                controllers_1.StartupOptimizerAdminController,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
@@ -64,6 +70,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.TierManagementService,
                 tools_1.TierOptimizerTool,
                 persistence_1.PersistenceService,
+                schedulers_1.OptimizerSchedulerService,
             ],
         };
     }
@@ -102,6 +109,10 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.TierManagementService,
                 tools_1.TierOptimizerTool,
                 persistence_1.PersistenceService,
+                schedulers_1.OptimizerSchedulerService,
+            ],
+            controllers: [
+                controllers_1.StartupOptimizerAdminController,
             ],
             exports: [
                 services_1.ModuleOrchestratorService,
@@ -115,6 +126,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
                 services_1.TierManagementService,
                 tools_1.TierOptimizerTool,
                 persistence_1.PersistenceService,
+                schedulers_1.OptimizerSchedulerService,
             ],
         };
     }

@@ -7,5 +7,7 @@ export { ModuleUsageStats, UsagePatterns, ModuleSequence, } from './application/
 export { TierAnalysis, PreloadResponse, PromotionResult, ModuleStatus, } from './application/services/tier-management.service';
 export { TierOptimizerTool, TierOptimizerInput, TierOptimizerResult } from './application/tools';
 export { UsageTrackingInterceptor, RuntimeLoaderInterceptor, } from './application/interceptors';
+export { StartupOptimizerAdminController } from './application/controllers';
+export { OptimizerSchedulerService } from './application/schedulers';
 export { PersistenceService } from './infrastructure/persistence';
 export { STARTUP_OPTIMIZER_OPTIONS } from './infrastructure/constants';

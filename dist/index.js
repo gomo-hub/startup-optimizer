@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STARTUP_OPTIMIZER_OPTIONS = exports.PersistenceService = exports.RuntimeLoaderInterceptor = exports.UsageTrackingInterceptor = exports.TierOptimizerTool = exports.TierManagementService = exports.UsagePatternService = exports.PreloadStrategyService = exports.AutoDiscoveryService = exports.ResourceMonitorService = exports.TierManagerService = exports.ModuleOrchestratorService = exports.UsagePattern = exports.TierDecision = exports.ModuleUsage = exports.ModuleTier = exports.StartupOptimizerModule = void 0;
+exports.STARTUP_OPTIMIZER_OPTIONS = exports.PersistenceService = exports.OptimizerSchedulerService = exports.StartupOptimizerAdminController = exports.RuntimeLoaderInterceptor = exports.UsageTrackingInterceptor = exports.TierOptimizerTool = exports.TierManagementService = exports.UsagePatternService = exports.PreloadStrategyService = exports.AutoDiscoveryService = exports.ResourceMonitorService = exports.TierManagerService = exports.ModuleOrchestratorService = exports.UsagePattern = exports.TierDecision = exports.ModuleUsage = exports.ModuleTier = exports.StartupOptimizerModule = void 0;
 var startup_optimizer_module_1 = require("./startup-optimizer.module");
 Object.defineProperty(exports, "StartupOptimizerModule", { enumerable: true, get: function () { return startup_optimizer_module_1.StartupOptimizerModule; } });
 var interfaces_1 = require("./domain/interfaces");
@@ -22,6 +22,10 @@ Object.defineProperty(exports, "TierOptimizerTool", { enumerable: true, get: fun
 var interceptors_1 = require("./application/interceptors");
 Object.defineProperty(exports, "UsageTrackingInterceptor", { enumerable: true, get: function () { return interceptors_1.UsageTrackingInterceptor; } });
 Object.defineProperty(exports, "RuntimeLoaderInterceptor", { enumerable: true, get: function () { return interceptors_1.RuntimeLoaderInterceptor; } });
+var controllers_1 = require("./application/controllers");
+Object.defineProperty(exports, "StartupOptimizerAdminController", { enumerable: true, get: function () { return controllers_1.StartupOptimizerAdminController; } });
+var schedulers_1 = require("./application/schedulers");
+Object.defineProperty(exports, "OptimizerSchedulerService", { enumerable: true, get: function () { return schedulers_1.OptimizerSchedulerService; } });
 var persistence_1 = require("./infrastructure/persistence");
 Object.defineProperty(exports, "PersistenceService", { enumerable: true, get: function () { return persistence_1.PersistenceService; } });
 var constants_1 = require("./infrastructure/constants");

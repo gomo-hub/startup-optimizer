@@ -53,6 +53,12 @@ export {
     RuntimeLoaderInterceptor,
 } from './application/interceptors';
 
+// Application - Controllers
+export { StartupOptimizerAdminController } from './application/controllers';
+
+// Application - Schedulers
+export { OptimizerSchedulerService } from './application/schedulers';
+
 // Infrastructure - Persistence
 export { PersistenceService } from './infrastructure/persistence';
 

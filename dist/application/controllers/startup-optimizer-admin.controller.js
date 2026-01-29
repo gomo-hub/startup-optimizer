@@ -194,6 +194,43 @@ let StartupOptimizerAdminController = class StartupOptimizerAdminController {
         await this.persistence.cleanup(body.retentionDays || 30);
         return { success: true, message: 'Cleanup completed' };
     }
+    async seedDecisions() {
+        if (!this.persistence) {
+            return { success: false, message: 'Persistence service not available' };
+        }
+        const sampleDecisions = [
+            { moduleName: 'PaymentsModule', fromTier: 'LAZY', toTier: 'ESSENTIAL', type: 'PROMOTE', confidence: 92 },
+            { moduleName: 'CartModule', fromTier: 'BACKGROUND', toTier: 'ESSENTIAL', type: 'PROMOTE', confidence: 88 },
+            { moduleName: 'AiEngineModule', fromTier: 'LAZY', toTier: 'BACKGROUND', type: 'PRELOAD', confidence: 85 },
+            { moduleName: 'VslModule', fromTier: 'BACKGROUND', toTier: 'LAZY', type: 'DEMOTE', confidence: 78 },
+            { moduleName: 'LiveAvatarModule', fromTier: 'BACKGROUND', toTier: 'DORMANT', type: 'OPTIMIZE', confidence: 72 },
+            { moduleName: 'EmailSequencesModule', fromTier: 'LAZY', toTier: 'BACKGROUND', type: 'PROMOTE', confidence: 81 },
+            { moduleName: 'AnalyticsModule', fromTier: 'ESSENTIAL', toTier: 'INSTANT', type: 'PROMOTE', confidence: 95 },
+            { moduleName: 'CompetitorIntelligenceModule', fromTier: 'BACKGROUND', toTier: 'DORMANT', type: 'DEMOTE', confidence: 65 },
+        ];
+        const created = [];
+        for (const decision of sampleDecisions) {
+            try {
+                const saved = await this.persistence.recordDecision({
+                    moduleName: decision.moduleName,
+                    fromTier: decision.fromTier,
+                    toTier: decision.toTier,
+                    decisionType: decision.type,
+                    agentId: 'TierOptimizerTool',
+                    reason: `AI recommendation based on usage patterns analysis`,
+                    confidence: decision.confidence,
+                });
+                created.push({ id: saved.id, module: decision.moduleName, type: decision.type });
+            }
+            catch (err) {
+            }
+        }
+        return {
+            success: true,
+            message: `Created ${created.length} sample AI decisions`,
+            decisions: created,
+        };
+    }
 };
 exports.StartupOptimizerAdminController = StartupOptimizerAdminController;
 __decorate([
@@ -275,6 +312,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], StartupOptimizerAdminController.prototype, "cleanup", null);
+__decorate([
+    (0, common_1.Post)('actions/seed-decisions'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], StartupOptimizerAdminController.prototype, "seedDecisions", null);
 exports.StartupOptimizerAdminController = StartupOptimizerAdminController = __decorate([
     (0, common_1.Controller)('admin/startup-optimizer'),
     __metadata("design:paramtypes", [tier_manager_service_1.TierManagerService,

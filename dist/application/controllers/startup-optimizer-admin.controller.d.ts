@@ -190,4 +190,17 @@ export declare class StartupOptimizerAdminController {
         success: boolean;
         message: string;
     }>;
+    seedDecisions(): Promise<{
+        success: boolean;
+        message: string;
+        decisions?: undefined;
+    } | {
+        success: boolean;
+        message: string;
+        decisions: {
+            id: string;
+            module: string;
+            type: "PRELOAD" | "PROMOTE" | "DEMOTE" | "OPTIMIZE";
+        }[];
+    }>;
 }

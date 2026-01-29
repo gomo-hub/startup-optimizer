@@ -266,4 +266,49 @@ export class StartupOptimizerAdminController {
         await this.persistence.cleanup(body.retentionDays || 30);
         return { success: true, message: 'Cleanup completed' };
     }
+
+    /**
+     * 🌱 Seed sample AI decisions for demonstration
+     */
+    @Post('actions/seed-decisions')
+    async seedDecisions() {
+        if (!this.persistence) {
+            return { success: false, message: 'Persistence service not available' };
+        }
+
+        const sampleDecisions = [
+            { moduleName: 'PaymentsModule', fromTier: 'LAZY', toTier: 'ESSENTIAL', type: 'PROMOTE' as const, confidence: 92 },
+            { moduleName: 'CartModule', fromTier: 'BACKGROUND', toTier: 'ESSENTIAL', type: 'PROMOTE' as const, confidence: 88 },
+            { moduleName: 'AiEngineModule', fromTier: 'LAZY', toTier: 'BACKGROUND', type: 'PRELOAD' as const, confidence: 85 },
+            { moduleName: 'VslModule', fromTier: 'BACKGROUND', toTier: 'LAZY', type: 'DEMOTE' as const, confidence: 78 },
+            { moduleName: 'LiveAvatarModule', fromTier: 'BACKGROUND', toTier: 'DORMANT', type: 'OPTIMIZE' as const, confidence: 72 },
+            { moduleName: 'EmailSequencesModule', fromTier: 'LAZY', toTier: 'BACKGROUND', type: 'PROMOTE' as const, confidence: 81 },
+            { moduleName: 'AnalyticsModule', fromTier: 'ESSENTIAL', toTier: 'INSTANT', type: 'PROMOTE' as const, confidence: 95 },
+            { moduleName: 'CompetitorIntelligenceModule', fromTier: 'BACKGROUND', toTier: 'DORMANT', type: 'DEMOTE' as const, confidence: 65 },
+        ];
+
+        const created = [];
+        for (const decision of sampleDecisions) {
+            try {
+                const saved = await this.persistence.recordDecision({
+                    moduleName: decision.moduleName,
+                    fromTier: decision.fromTier,
+                    toTier: decision.toTier,
+                    decisionType: decision.type,
+                    agentId: 'TierOptimizerTool',
+                    reason: `AI recommendation based on usage patterns analysis`,
+                    confidence: decision.confidence,
+                });
+                created.push({ id: saved.id, module: decision.moduleName, type: decision.type });
+            } catch (err) {
+                // Skip if already exists or error
+            }
+        }
+
+        return {
+            success: true,
+            message: `Created ${created.length} sample AI decisions`,
+            decisions: created,
+        };
+    }
 }

@@ -72,7 +72,7 @@ __decorate([
     __metadata("design:type", Date)
 ], UsagePattern.prototype, "updatedAt", void 0);
 exports.UsagePattern = UsagePattern = __decorate([
-    (0, typeorm_1.Entity)('startup_optimizer_patterns'),
+    (0, typeorm_1.Entity)({ name: 'startup_optimizer_patterns', schema: 'gomo_hub' }),
     (0, typeorm_1.Index)(['orgId', 'moduleName']),
     (0, typeorm_1.Index)(['patternType'])
 ], UsagePattern);

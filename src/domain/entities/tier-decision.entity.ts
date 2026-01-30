@@ -9,7 +9,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
  * - Why (context/reason)
  * - Outcome (was it effective?)
  */
-@Entity('startup_optimizer_tier_decisions')
+@Entity({ name: 'startup_optimizer_tier_decisions', schema: 'gomo_hub' })
 @Index(['orgId', 'moduleName'])
 @Index(['decidedAt'])
 export class TierDecision {

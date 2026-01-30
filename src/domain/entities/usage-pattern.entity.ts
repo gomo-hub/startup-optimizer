@@ -8,7 +8,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
  * - Sequence patterns (A → B)
  * - Hot/cold module classification
  */
-@Entity('startup_optimizer_patterns')
+@Entity({ name: 'startup_optimizer_patterns', schema: 'gomo_hub' })
 @Index(['orgId', 'moduleName'])
 @Index(['patternType'])
 export class UsagePattern {

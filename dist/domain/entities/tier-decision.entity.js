@@ -68,7 +68,7 @@ __decorate([
     __metadata("design:type", Date)
 ], TierDecision.prototype, "validatedAt", void 0);
 exports.TierDecision = TierDecision = __decorate([
-    (0, typeorm_1.Entity)('startup_optimizer_tier_decisions'),
+    (0, typeorm_1.Entity)({ name: 'startup_optimizer_tier_decisions', schema: 'gomo_hub' }),
     (0, typeorm_1.Index)(['orgId', 'moduleName']),
     (0, typeorm_1.Index)(['decidedAt'])
 ], TierDecision);

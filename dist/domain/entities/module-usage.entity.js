@@ -40,7 +40,7 @@ __decorate([
     __metadata("design:type", Date)
 ], ModuleUsage.prototype, "accessedAt", void 0);
 exports.ModuleUsage = ModuleUsage = __decorate([
-    (0, typeorm_1.Entity)('startup_optimizer_usage'),
+    (0, typeorm_1.Entity)({ name: 'startup_optimizer_usage', schema: 'gomo_hub' }),
     (0, typeorm_1.Index)(['orgId', 'moduleName']),
     (0, typeorm_1.Index)(['orgId', 'accessedAt'])
 ], ModuleUsage);

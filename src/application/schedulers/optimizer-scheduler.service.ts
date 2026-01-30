@@ -15,7 +15,9 @@ import { UsagePatternService } from '../services/usage-pattern.service';
 @Injectable()
 export class OptimizerSchedulerService implements OnModuleInit, OnModuleDestroy {
     private readonly logger = new Logger(OptimizerSchedulerService.name);
-    private isEnabled = true;
+
+    // Read from env: MOD_AI_OPTIMIZE=false disables AI analysis in dev
+    private isEnabled = process.env.MOD_AI_OPTIMIZE !== 'false';
 
     // Timer handles
     private hourlyTimer: NodeJS.Timeout | null = null;
@@ -30,8 +32,10 @@ export class OptimizerSchedulerService implements OnModuleInit, OnModuleDestroy 
     ) { }
 
     async onModuleInit() {
-        this.logger.log('⏰ Optimizer Scheduler initialized');
-        this.startTimers();
+        this.logger.log(`⏰ Optimizer Scheduler initialized (enabled: ${this.isEnabled})`);
+        if (this.isEnabled) {
+            this.startTimers();
+        }
     }
 
     onModuleDestroy() {

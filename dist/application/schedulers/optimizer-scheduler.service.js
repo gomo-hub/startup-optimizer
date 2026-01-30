@@ -21,15 +21,17 @@ let OptimizerSchedulerService = OptimizerSchedulerService_1 = class OptimizerSch
         this.tierManagement = tierManagement;
         this.usagePattern = usagePattern;
         this.logger = new common_1.Logger(OptimizerSchedulerService_1.name);
-        this.isEnabled = true;
+        this.isEnabled = process.env.MOD_AI_OPTIMIZE !== 'false';
         this.hourlyTimer = null;
         this.sixHourTimer = null;
         this.fifteenMinTimer = null;
         this.dailyTimer = null;
     }
     async onModuleInit() {
-        this.logger.log('⏰ Optimizer Scheduler initialized');
-        this.startTimers();
+        this.logger.log(`⏰ Optimizer Scheduler initialized (enabled: ${this.isEnabled})`);
+        if (this.isEnabled) {
+            this.startTimers();
+        }
     }
     onModuleDestroy() {
         this.stopTimers();

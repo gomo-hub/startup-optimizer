@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 
 /**
  * Tracks module usage per tenant for demand prediction
  */
-@Entity('startup_optimizer_usage')
+@Entity({ name: 'startup_optimizer_usage', schema: 'gomo_hub' })
 @Index(['orgId', 'moduleName'])
 @Index(['orgId', 'accessedAt'])
 export class ModuleUsage {

@@ -214,7 +214,7 @@ let PersistenceService = PersistenceService_1 = class PersistenceService {
             .addSelect('COUNT(*)', 'accessCount')
             .where('u.accessed_at > :since', { since })
             .groupBy('u.module_name')
-            .orderBy('accessCount', 'DESC')
+            .orderBy('"accessCount"', 'DESC')
             .getRawMany();
         if (stats.length === 0)
             return;

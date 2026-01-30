@@ -20,6 +20,7 @@ export class MigrationService implements OnModuleInit {
     private readonly logger = new Logger(MigrationService.name);
     private readonly migrationsPath: string;
     private readonly MODULE_NAME = 'startup_optimizer';
+    private readonly SCHEMA_NAME = 'gomo_hub';
     private readonly LOCK_ID = 168169169; // ID único para este módulo
 
     constructor(private readonly dataSource: DataSource) {
@@ -48,6 +49,9 @@ export class MigrationService implements OnModuleInit {
                 // Aguardar lock (blocking)
                 await this.dataSource.query(`SELECT pg_advisory_lock($1)`, [this.LOCK_ID]);
             }
+
+            // Criar schema se não existir
+            await this.ensureSchemaExists();
 
             // Criar tabela de controle se não existir
             await this.ensureMigrationsTable();
@@ -81,18 +85,29 @@ export class MigrationService implements OnModuleInit {
     }
 
     /**
+     * Garante que o schema gomo_hub existe
+     */
+    private async ensureSchemaExists(): Promise<void> {
+        await this.dataSource.query(`
+            CREATE SCHEMA IF NOT EXISTS ${this.SCHEMA_NAME}
+        `);
+    }
+
+    /**
      * Garante que a tabela de controle existe
      * Segue padrão 168.9 com checksum
      */
     private async ensureMigrationsTable(): Promise<void> {
+        const tableName = `${this.SCHEMA_NAME}.${this.MODULE_NAME}_migrations`;
         await this.dataSource.query(`
             DO $$
             BEGIN
                 IF NOT EXISTS (
                     SELECT 1 FROM information_schema.tables 
-                    WHERE table_name = '${this.MODULE_NAME}_migrations'
+                    WHERE table_schema = '${this.SCHEMA_NAME}'
+                    AND table_name = '${this.MODULE_NAME}_migrations'
                 ) THEN
-                    CREATE TABLE ${this.MODULE_NAME}_migrations (
+                    CREATE TABLE ${tableName} (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(255) NOT NULL UNIQUE,
                         checksum VARCHAR(64),
@@ -124,8 +139,9 @@ export class MigrationService implements OnModuleInit {
      */
     private async getExecutedMigrations(): Promise<string[]> {
         try {
+            const tableName = `${this.SCHEMA_NAME}.${this.MODULE_NAME}_migrations`;
             const result = await this.dataSource.query(`
-                SELECT name FROM ${this.MODULE_NAME}_migrations ORDER BY id
+                SELECT name FROM ${tableName} ORDER BY id
             `);
             return result.map((r: any) => r.name);
         } catch {
@@ -145,9 +161,11 @@ export class MigrationService implements OnModuleInit {
      * Usa ON CONFLICT para evitar race condition
      */
     private async executeMigration(name: string): Promise<void> {
+        const tableName = `${this.SCHEMA_NAME}.${this.MODULE_NAME}_migrations`;
+
         // Verificar novamente se já foi executada (race condition protection)
         const alreadyExecuted = await this.dataSource.query(`
-            SELECT 1 FROM ${this.MODULE_NAME}_migrations WHERE name = $1
+            SELECT 1 FROM ${tableName} WHERE name = $1
         `, [name]);
 
         if (alreadyExecuted.length > 0) {
@@ -165,7 +183,7 @@ export class MigrationService implements OnModuleInit {
 
         // Usar ON CONFLICT para evitar erro se outra instância inseriu primeiro
         await this.dataSource.query(`
-            INSERT INTO ${this.MODULE_NAME}_migrations (name, checksum) VALUES ($1, $2)
+            INSERT INTO ${tableName} (name, checksum) VALUES ($1, $2)
             ON CONFLICT (name) DO NOTHING
         `, [name, checksum]);
 

@@ -54,6 +54,7 @@ let MigrationService = MigrationService_1 = class MigrationService {
         this.dataSource = dataSource;
         this.logger = new common_1.Logger(MigrationService_1.name);
         this.MODULE_NAME = 'startup_optimizer';
+        this.SCHEMA_NAME = 'gomo_hub';
         this.LOCK_ID = 168169169;
         this.migrationsPath = path.join(__dirname, 'migrations');
     }
@@ -67,6 +68,7 @@ let MigrationService = MigrationService_1 = class MigrationService {
                 this.logger.log('⏳ StartupOptimizer: Outra instância está executando migrations...');
                 await this.dataSource.query(`SELECT pg_advisory_lock($1)`, [this.LOCK_ID]);
             }
+            await this.ensureSchemaExists();
             await this.ensureMigrationsTable();
             const migrations = await this.getAvailableMigrations();
             const executed = await this.getExecutedMigrations();
@@ -89,15 +91,22 @@ let MigrationService = MigrationService_1 = class MigrationService {
             await this.dataSource.query(`SELECT pg_advisory_unlock($1)`, [this.LOCK_ID]).catch(() => { });
         }
     }
+    async ensureSchemaExists() {
+        await this.dataSource.query(`
+            CREATE SCHEMA IF NOT EXISTS ${this.SCHEMA_NAME}
+        `);
+    }
     async ensureMigrationsTable() {
+        const tableName = `${this.SCHEMA_NAME}.${this.MODULE_NAME}_migrations`;
         await this.dataSource.query(`
             DO $$
             BEGIN
                 IF NOT EXISTS (
                     SELECT 1 FROM information_schema.tables 
-                    WHERE table_name = '${this.MODULE_NAME}_migrations'
+                    WHERE table_schema = '${this.SCHEMA_NAME}'
+                    AND table_name = '${this.MODULE_NAME}_migrations'
                 ) THEN
-                    CREATE TABLE ${this.MODULE_NAME}_migrations (
+                    CREATE TABLE ${tableName} (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(255) NOT NULL UNIQUE,
                         checksum VARCHAR(64),
@@ -119,8 +128,9 @@ let MigrationService = MigrationService_1 = class MigrationService {
     }
     async getExecutedMigrations() {
         try {
+            const tableName = `${this.SCHEMA_NAME}.${this.MODULE_NAME}_migrations`;
             const result = await this.dataSource.query(`
-                SELECT name FROM ${this.MODULE_NAME}_migrations ORDER BY id
+                SELECT name FROM ${tableName} ORDER BY id
             `);
             return result.map((r) => r.name);
         }
@@ -132,8 +142,9 @@ let MigrationService = MigrationService_1 = class MigrationService {
         return crypto.createHash('sha256').update(content).digest('hex').substring(0, 16);
     }
     async executeMigration(name) {
+        const tableName = `${this.SCHEMA_NAME}.${this.MODULE_NAME}_migrations`;
         const alreadyExecuted = await this.dataSource.query(`
-            SELECT 1 FROM ${this.MODULE_NAME}_migrations WHERE name = $1
+            SELECT 1 FROM ${tableName} WHERE name = $1
         `, [name]);
         if (alreadyExecuted.length > 0) {
             this.logger.debug(`⏭️ Skipping ${name} (already executed)`);
@@ -145,7 +156,7 @@ let MigrationService = MigrationService_1 = class MigrationService {
         this.logger.log(`🔄 Executando: ${name}`);
         await this.dataSource.query(sql);
         await this.dataSource.query(`
-            INSERT INTO ${this.MODULE_NAME}_migrations (name, checksum) VALUES ($1, $2)
+            INSERT INTO ${tableName} (name, checksum) VALUES ($1, $2)
             ON CONFLICT (name) DO NOTHING
         `, [name, checksum]);
         this.logger.log(`✅ Concluído: ${name}`);

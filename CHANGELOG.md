@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.9] - 2026-02-21
+
+### Changed
+- Publicado v1.0.9 no Google Artifact Registry
+
+
 ## [1.0.8] - 2026-02-21
 
 ### Changed

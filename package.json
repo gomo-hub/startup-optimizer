@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc && cp -r src/infrastructure/auto-install/migrations dist/infrastructure/auto-install/",
+    "build": "tsc && mkdir -p dist/infrastructure/auto-install && cp -r src/infrastructure/auto-install/migrations dist/infrastructure/auto-install/",
     "dev": "tsc --watch",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "test": "jest",

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.6] - 2026-02-21
+
+### Changed
+- Publicado v1.0.6 no Google Artifact Registry
+
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

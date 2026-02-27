@@ -132,9 +132,12 @@ export class DependencyCheckerService {
         } catch { /* ignore */ }
 
         try {
-            const migrationResult = await this.dataSource.query(
-                `SELECT COUNT(*) as count FROM startup_optimizer_migrations`
-            );
+            const migrationResult = await this.dataSource.query(`
+                SELECT COUNT(*) as count 
+                FROM information_schema.tables 
+                WHERE table_schema = 'gomo_hub' 
+                  AND table_name = 'startup_optimizer_usage'
+            `);
             migrations = parseInt(migrationResult[0]?.count || '0', 10);
         } catch { /* ignore */ }
 

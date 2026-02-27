@@ -87,7 +87,7 @@ export class AutoDiscoveryService implements OnModuleInit {
                 .addSelect('AVG(usage.loadTimeMs)', 'avgLoadTime')
                 .where('usage.accessedAt > :windowStart', { windowStart })
                 .groupBy('usage.moduleName')
-                .orderBy('accessCount', 'DESC')
+                .orderBy('"accessCount"', 'DESC')
                 .getRawMany();
 
             if (usageStats.length === 0) {

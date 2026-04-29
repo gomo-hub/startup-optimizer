@@ -135,7 +135,7 @@ export class DependencyCheckerService {
             const migrationResult = await this.dataSource.query(`
                 SELECT COUNT(*) as count 
                 FROM information_schema.tables 
-                WHERE table_schema = 'gomo_hub' 
+                WHERE table_schema = current_schema() 
                   AND table_name = 'startup_optimizer_usage'
             `);
             migrations = parseInt(migrationResult[0]?.count || '0', 10);

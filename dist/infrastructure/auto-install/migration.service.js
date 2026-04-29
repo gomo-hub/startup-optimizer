@@ -93,7 +93,7 @@ let MigrationService = MigrationService_1 = class MigrationService {
     }
     async ensureSchemaExists() {
         await this.dataSource.query(`
-            CREATE SCHEMA IF NOT EXISTS ${this.SCHEMA_NAME}
+
         `);
     }
     async ensureMigrationsTable() {

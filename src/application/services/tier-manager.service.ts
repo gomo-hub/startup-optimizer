@@ -16,7 +16,7 @@ export class TierManagerService {
         this.registry.set(registration.name, {
             ...registration,
             loaded: false,
-        });
+});
         this.logger.debug(`📦 Registered module: ${registration.name} (Tier ${ModuleTier[registration.tier]})`);
     }
 
@@ -38,7 +38,7 @@ export class TierManagerService {
                 const aDeps = a.dependencies?.length || 0;
                 const bDeps = b.dependencies?.length || 0;
                 return aDeps - bDeps;
-            });
+});
     }
 
     /**

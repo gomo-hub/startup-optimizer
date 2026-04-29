@@ -168,7 +168,7 @@ export class StartupOptimizerAdminController {
         @Query('limit') limit = 50,
     ) {
         const [decisions, effectiveness] = await Promise.all([
-            this.persistence.getDecisionHistory({ daysBack: days, limit }),
+            this.persistence.getDecisionHistory({ daysBack: days, limit}),
             this.persistence.getDecisionEffectiveness(),
         ]);
 
@@ -183,7 +183,7 @@ export class StartupOptimizerAdminController {
                 confidence: d.confidence,
                 wasEffective: d.wasEffective,
                 decidedAt: d.decidedAt,
-            })),
+})),
         };
     }
 
@@ -221,7 +221,7 @@ export class StartupOptimizerAdminController {
     // ═══════════════════════════════════════════════════════════════
 
     @Post('actions/preload')
-    async preloadModules(@Body() body: { moduleNames: string[] }) {
+    async preloadModules(@Body() body: { moduleNames: string[]}) {
         const result = await this.tierManagement.preloadModules(body.moduleNames);
 
         // Record decision
@@ -232,14 +232,14 @@ export class StartupOptimizerAdminController {
                 decisionType: 'PRELOAD',
                 reason: 'Manual admin preload',
                 confidence: 100,
-            });
+});
         }
 
         return result;
     }
 
     @Post('actions/promote')
-    async promoteModule(@Body() body: { moduleName: string; reason?: string }) {
+    async promoteModule(@Body() body: { moduleName: string; reason?: string}) {
         const result = await this.tierManagement.promoteModule(body.moduleName);
 
         if (result.success) {
@@ -249,20 +249,20 @@ export class StartupOptimizerAdminController {
                 decisionType: 'PROMOTE',
                 reason: body.reason || 'Manual admin promotion',
                 confidence: 100,
-            });
+});
         }
 
         return result;
     }
 
     @Post('actions/classify')
-    async classifyModules(@Body() body: { periodDays?: number }) {
+    async classifyModules(@Body() body: { periodDays?: number}) {
         await this.persistence.classifyModules(body.periodDays || 7);
         return { success: true, message: 'Classification completed' };
     }
 
     @Post('actions/cleanup')
-    async cleanup(@Body() body: { retentionDays?: number }) {
+    async cleanup(@Body() body: { retentionDays?: number}) {
         await this.persistence.cleanup(body.retentionDays || 30);
         return { success: true, message: 'Cleanup completed' };
     }
@@ -298,8 +298,8 @@ export class StartupOptimizerAdminController {
                     agentId: 'TierOptimizerTool',
                     reason: `AI recommendation based on usage patterns analysis`,
                     confidence: decision.confidence,
-                });
-                created.push({ id: saved.id, module: decision.moduleName, type: decision.type });
+});
+                created.push({ id: saved.id, module: decision.moduleName, type: decision.type});
             } catch (err) {
                 // Skip if already exists or error
             }

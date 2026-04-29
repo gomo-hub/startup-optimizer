@@ -44,13 +44,13 @@ export class PersistenceService implements OnModuleInit {
         moduleName: string;
         route?: string;
         loadTimeMs?: number;
-    }): Promise<void> {
+}): Promise<void> {
         const usage = this.usageRepo.create({
             orgId: params.orgId,
             moduleName: params.moduleName,
             route: params.route,
             loadTimeMs: params.loadTimeMs,
-        });
+});
 
         await this.usageRepo.save(usage);
     }
@@ -68,11 +68,11 @@ export class PersistenceService implements OnModuleInit {
         since.setDate(since.getDate() - days);
 
         const qb = this.usageRepo.createQueryBuilder('u')
-            .where('u.module_name = :moduleName', { moduleName })
-            .andWhere('u.accessed_at > :since', { since });
+            .where('u.module_name = :moduleName', { moduleName})
+            .andWhere('u.accessed_at > :since', { since});
 
         if (orgId) {
-            qb.andWhere('u.org_id = :orgId', { orgId });
+            qb.andWhere('u.org_id = :orgId', { orgId});
         }
 
         const usages = await qb.getMany();
@@ -126,7 +126,7 @@ export class PersistenceService implements OnModuleInit {
         reason?: string;
         confidence?: number;
         orgId?: string;
-    }): Promise<TierDecision> {
+}): Promise<TierDecision> {
         const decision = this.decisionRepo.create({
             moduleName: params.moduleName,
             fromTier: params.fromTier,
@@ -136,7 +136,7 @@ export class PersistenceService implements OnModuleInit {
             reason: params.reason,
             confidence: params.confidence || 50,
             orgId: params.orgId,
-        });
+});
 
         const saved = await this.decisionRepo.save(decision);
         this.logger.log(`📝 Recorded ${params.decisionType} decision: ${params.moduleName} → ${params.toTier}`);
@@ -156,7 +156,7 @@ export class PersistenceService implements OnModuleInit {
             wasEffective,
             timeToUseMs,
             validatedAt: new Date(),
-        });
+});
 
         this.logger.log(`✅ Validated decision ${decisionId}: effective=${wasEffective}`);
     }
@@ -169,22 +169,22 @@ export class PersistenceService implements OnModuleInit {
         decisionType?: string;
         daysBack?: number;
         limit?: number;
-    }): Promise<TierDecision[]> {
+}): Promise<TierDecision[]> {
         const qb = this.decisionRepo.createQueryBuilder('d')
             .orderBy('d.decided_at', 'DESC');
 
         if (params.moduleName) {
-            qb.andWhere('d.module_name = :moduleName', { moduleName: params.moduleName });
+            qb.andWhere('d.module_name = :moduleName', { moduleName: params.moduleName});
         }
 
         if (params.decisionType) {
-            qb.andWhere('d.decision_type = :decisionType', { decisionType: params.decisionType });
+            qb.andWhere('d.decision_type = :decisionType', { decisionType: params.decisionType});
         }
 
         if (params.daysBack) {
             const since = new Date();
             since.setDate(since.getDate() - params.daysBack);
-            qb.andWhere('d.decided_at > :since', { since });
+            qb.andWhere('d.decided_at > :since', { since});
         }
 
         if (params.limit) {
@@ -206,11 +206,11 @@ export class PersistenceService implements OnModuleInit {
     }> {
         const decisions = await this.decisionRepo.find({
             where: { wasEffective: true },
-        });
+});
 
         const validated = await this.decisionRepo.count({
             where: { wasEffective: true },
-        });
+});
 
         const effectiveDecisions = decisions.filter(d => d.wasEffective);
         const avgTimeToUse = effectiveDecisions
@@ -245,7 +245,7 @@ export class PersistenceService implements OnModuleInit {
         confidence?: number;
         classification?: 'HOT' | 'WARM' | 'COLD';
         orgId?: string;
-    }): Promise<UsagePattern> {
+}): Promise<UsagePattern> {
         // Try to find existing pattern to update
         const existing = await this.patternRepo.findOne({
             where: {
@@ -255,7 +255,7 @@ export class PersistenceService implements OnModuleInit {
                 relatedModule: params.relatedModule,
                 orgId: params.orgId,
             },
-        });
+});
 
         if (existing) {
             // Update existing
@@ -285,7 +285,7 @@ export class PersistenceService implements OnModuleInit {
             confidence: params.confidence || 50,
             classification: params.classification,
             orgId: params.orgId,
-        });
+});
 
         return this.patternRepo.save(pattern);
     }
@@ -297,7 +297,7 @@ export class PersistenceService implements OnModuleInit {
         const where: any = { moduleName };
         if (orgId) where.orgId = orgId;
 
-        return this.patternRepo.find({ where });
+        return this.patternRepo.find({ where});
     }
 
     /**
@@ -315,14 +315,14 @@ export class PersistenceService implements OnModuleInit {
                 confidence: MoreThan(minConfidence),
             },
             order: { count: 'DESC' },
-        });
+});
 
         return patterns.map(p => ({
             fromModule: p.moduleName,
             toModule: p.relatedModule || '',
             count: p.count,
             confidence: p.confidence,
-        }));
+}));
     }
 
     /**
@@ -336,7 +336,7 @@ export class PersistenceService implements OnModuleInit {
                 classification: 'HOT',
             },
             order: { count: 'DESC' },
-        });
+});
 
         return patterns.map(p => p.moduleName);
     }
@@ -353,7 +353,7 @@ export class PersistenceService implements OnModuleInit {
             .createQueryBuilder('u')
             .select('u.module_name', 'moduleName')
             .addSelect('COUNT(*)', 'accessCount')
-            .where('u.accessed_at > :since', { since })
+            .where('u.accessed_at > :since', { since})
             .groupBy('u.module_name')
             .orderBy('"accessCount"', 'DESC')
             .getRawMany();
@@ -382,7 +382,7 @@ export class PersistenceService implements OnModuleInit {
                 count,
                 classification,
                 confidence: Math.min(95, Math.round((count / totalAccesses) * 100 + 50)),
-            });
+});
         }
 
         this.logger.log(`📊 Classified ${stats.length} modules`);
@@ -402,12 +402,12 @@ export class PersistenceService implements OnModuleInit {
         // Clean old usage records
         const usageResult = await this.usageRepo.delete({
             accessedAt: Between(new Date(0), cutoff),
-        });
+});
 
         // Clean old decisions
         const decisionResult = await this.decisionRepo.delete({
             decidedAt: Between(new Date(0), cutoff),
-        });
+});
 
         this.logger.log(`🧹 Cleanup: ${usageResult.affected} usages, ${decisionResult.affected} decisions`);
     }

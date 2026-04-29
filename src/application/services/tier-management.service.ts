@@ -143,7 +143,7 @@ export class TierManagementService {
         if (tierStats.total > 0) {
             // Get all registered modules from TierManager
             const allModules = this.tierManager.getUnloadedModules()
-                .concat([...Array.from({ length: tierStats.loaded }, (_, i) => ({ name: `loaded-${i}` }))] as any);
+                .concat([...Array.from({ length: tierStats.loaded }, (_, i) => ({ name: `loaded-${i}`}))] as any);
 
             // Actually iterate the Map keys from registry via getModule checks
             for (const [moduleName] of usageStats.entries()) {
@@ -166,7 +166,7 @@ export class TierManagementService {
                                     avgResponseTimeMs: usageStats.get(mod.name)!.avgResponseTimeMs,
                                     lastAccessedAt: usageStats.get(mod.name)!.lastAccessedAt,
                                 } : null,
-                            });
+});
                         }
                     }
                 }

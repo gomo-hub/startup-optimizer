@@ -80,7 +80,7 @@ export class MigrationService implements OnModuleInit {
             throw error;
         } finally {
             // Liberar lock
-            await this.dataSource.query(`SELECT pg_advisory_unlock($1)`, [this.LOCK_ID]).catch(() => { });
+            await this.dataSource.query(`SELECT pg_advisory_unlock($1)`, [this.LOCK_ID]).catch(() => {});
         }
     }
 
@@ -89,7 +89,7 @@ export class MigrationService implements OnModuleInit {
      */
     private async ensureSchemaExists(): Promise<void> {
         await this.dataSource.query(`
-            CREATE SCHEMA IF NOT EXISTS ${this.SCHEMA_NAME}
+
         `);
     }
 

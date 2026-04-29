@@ -44,7 +44,7 @@ export class UsageTrackingInterceptor implements NestInterceptor {
                         route,
                         loadTime,
                         orgId,
-                    ).catch(() => { }); // Ignore tracking errors
+                    ).catch(() => {}); // Ignore tracking errors
                 },
                 error: () => {
                     // Also track errors (module was still accessed)
@@ -54,9 +54,9 @@ export class UsageTrackingInterceptor implements NestInterceptor {
                         route,
                         loadTime,
                         orgId,
-                    ).catch(() => { });
+                    ).catch(() => {});
                 },
-            }),
+}),
         );
     }
 

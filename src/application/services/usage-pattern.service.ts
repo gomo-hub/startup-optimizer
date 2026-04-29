@@ -53,7 +53,7 @@ export class UsagePatternService {
         }
 
         // Add to sequence for pattern detection
-        this.accessSequence.push({ module: moduleName, timestamp: new Date() });
+        this.accessSequence.push({ module: moduleName, timestamp: new Date()});
         if (this.accessSequence.length > this.maxSequenceLength) {
             this.accessSequence.shift();
         }
@@ -79,7 +79,7 @@ export class UsagePatternService {
                 percentOfTotal: Math.round(
                     ((stats.accessByHour[currentHour] || 0) / stats.totalAccesses) * 100
                 ),
-            }));
+}));
 
         // Detect access sequences (A → B patterns)
         const sequences = this.detectSequences();
@@ -96,7 +96,7 @@ export class UsagePatternService {
                 module: name,
                 totalAccesses: stats.totalAccesses,
                 avgResponseTimeMs: stats.avgResponseTimeMs,
-            })),
+})),
             hotAtThisHour,
             coldModules,
             sequences,
@@ -134,7 +134,7 @@ export class UsagePatternService {
                         toModule: to,
                         occurrences: count,
                         confidence: Math.min(100, count * 10), // Simple confidence calculation
-                    });
+});
                 }
             }
         }

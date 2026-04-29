@@ -75,7 +75,7 @@ export class PreloadStrategyService {
                 moduleName,
                 preloadedAt: new Date(),
                 wasUsed: false, // Will be updated when module is actually accessed
-            });
+});
         } else {
             this.logger.warn(`⚠️ Failed to preload ${moduleName}`);
         }

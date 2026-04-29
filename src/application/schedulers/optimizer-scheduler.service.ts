@@ -130,7 +130,7 @@ export class OptimizerSchedulerService implements OnModuleInit, OnModuleDestroy 
                         decisionType: 'PRELOAD',
                         reason: `Auto-preload: HOT module at hour ${currentHour}`,
                         confidence: 75,
-                    });
+});
                 }
 
                 const successCount = result.loaded?.length || 0;
@@ -159,7 +159,7 @@ export class OptimizerSchedulerService implements OnModuleInit, OnModuleDestroy 
             const recentDecisions = await this.persistence.getDecisionHistory({
                 daysBack: 1,
                 limit: 50,
-            });
+});
 
             const unvalidated = recentDecisions.filter(d => d.wasEffective === null);
 

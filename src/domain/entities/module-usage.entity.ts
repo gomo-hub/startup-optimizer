@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 
 /**
  * Tracks module usage per tenant for demand prediction
  */
-@Entity({ name: 'startup_optimizer_usage', schema: 'gomo_hub' })
+@Entity({ name: 'startup_optimizer_usage'})
 @Index(['orgId', 'moduleName'])
 @Index(['orgId', 'accessedAt'])
 export class ModuleUsage {
@@ -11,23 +11,23 @@ export class ModuleUsage {
     id: string;
 
     /** Organization/tenant ID */
-    @Column({ name: 'org_id', type: 'uuid' })
+    @Column({ name: 'org_id', type: 'uuid'})
     @Index()
     orgId: string;
 
     /** Module name (e.g., 'VideoComposer', 'Calendar') */
-    @Column({ name: 'module_name', type: 'varchar', length: 100 })
+    @Column({ name: 'module_name', type: 'varchar', length: 100})
     moduleName: string;
 
     /** Route that triggered the load */
-    @Column({ name: 'route', type: 'varchar', length: 255, nullable: true })
+    @Column({ name: 'route', type: 'varchar', length: 255, nullable: true})
     route?: string;
 
     /** Load time in milliseconds */
-    @Column({ name: 'load_time_ms', type: 'int', nullable: true })
+    @Column({ name: 'load_time_ms', type: 'int', nullable: true})
     loadTimeMs?: number;
 
     /** Accessed timestamp */
-    @CreateDateColumn({ name: 'accessed_at' })
+    @CreateDateColumn({ name: 'accessed_at'})
     accessedAt: Date;
 }

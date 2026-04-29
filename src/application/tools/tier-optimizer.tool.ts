@@ -99,7 +99,7 @@ export class TierOptimizerTool {
                             agentId,
                             reason: input.reason || 'AI agent preload decision',
                             confidence: input.confidence || 70,
-                        });
+});
                     }
                     break;
 
@@ -118,7 +118,7 @@ export class TierOptimizerTool {
                             agentId,
                             reason: input.reason || 'AI agent promotion decision',
                             confidence: input.confidence || 75,
-                        });
+});
                     }
                     break;
 

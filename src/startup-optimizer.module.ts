@@ -1,4 +1,5 @@
 import { Module, DynamicModule, Global } from '@nestjs/common';
+import { DiscoveryModule } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
     StartupOptimizerOptions,
@@ -32,6 +33,7 @@ export class StartupOptimizerModule {
         return {
             module: StartupOptimizerModule,
             imports: [
+                DiscoveryModule,
                 TypeOrmModule.forFeature([ModuleUsage, TierDecision, UsagePattern]),
             ],
             providers: [
@@ -98,6 +100,7 @@ export class StartupOptimizerModule {
         return {
             module: StartupOptimizerModule,
             imports: [
+                DiscoveryModule,
                 ...(asyncOptions.imports || []),
                 TypeOrmModule.forFeature([ModuleUsage, TierDecision, UsagePattern]),
             ],

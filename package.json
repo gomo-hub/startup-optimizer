@@ -1,6 +1,6 @@
 {
   "name": "@gomo-hub/startup-optimizer",
-  "version": "1.0.12",
+  "version": "1.0.16",
   "description": "Progressive Module Architecture (PMA) for NestJS - Optimize startup time with tiered module loading",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -56,7 +56,7 @@
     "typeorm": "^0.3.19"
   },
   "publishConfig": {
-    "registry": "https://us-central1-npm.pkg.dev/macoolgo/gomo-hub/"
+    "registry": "https://npm.pkg.netsar.com/"
   },
   "files": [
     "dist"

@@ -9,6 +9,7 @@ var StartupOptimizerModule_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StartupOptimizerModule = void 0;
 const common_1 = require("@nestjs/common");
+const core_1 = require("@nestjs/core");
 const typeorm_1 = require("@nestjs/typeorm");
 const entities_1 = require("./domain/entities");
 const services_1 = require("./application/services");
@@ -24,6 +25,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
         return {
             module: StartupOptimizerModule_1,
             imports: [
+                core_1.DiscoveryModule,
                 typeorm_1.TypeOrmModule.forFeature([entities_1.ModuleUsage, entities_1.TierDecision, entities_1.UsagePattern]),
             ],
             providers: [
@@ -78,6 +80,7 @@ let StartupOptimizerModule = StartupOptimizerModule_1 = class StartupOptimizerMo
         return {
             module: StartupOptimizerModule_1,
             imports: [
+                core_1.DiscoveryModule,
                 ...(asyncOptions.imports || []),
                 typeorm_1.TypeOrmModule.forFeature([entities_1.ModuleUsage, entities_1.TierDecision, entities_1.UsagePattern]),
             ],

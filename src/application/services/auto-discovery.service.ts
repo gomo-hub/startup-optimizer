@@ -64,7 +64,7 @@ export class AutoDiscoveryService implements OnModuleInit {
                 name,
                 loaded: true,
                 loadedAt: new Date(),
-            });
+});
         }
 
         const stats = this.tierManager.getStats();
@@ -85,7 +85,7 @@ export class AutoDiscoveryService implements OnModuleInit {
                 .select('usage.moduleName', 'moduleName')
                 .addSelect('COUNT(*)', 'accessCount')
                 .addSelect('AVG(usage.loadTimeMs)', 'avgLoadTime')
-                .where('usage.accessedAt > :windowStart', { windowStart })
+                .where('usage.accessedAt > :windowStart', { windowStart})
                 .groupBy('usage.moduleName')
                 .orderBy('"accessCount"', 'DESC')
                 .getRawMany();
@@ -170,7 +170,7 @@ export class AutoDiscoveryService implements OnModuleInit {
                     moduleName: registration.name,
                     accessedAt: MoreThan(windowStart),
                 },
-            });
+});
 
             if (usageCount === this.DEMOTION_THRESHOLD && registration.tier < ModuleTier.LAZY) {
                 const oldTier = ModuleTier[registration.tier];
@@ -227,7 +227,7 @@ export class AutoDiscoveryService implements OnModuleInit {
                 loadTimeMs,
                 orgId: orgId || 'system',
                 accessedAt: new Date(),
-            });
+});
             await this.usageRepository.save(usage);
         } catch (error) {
             this.logger.debug(`Failed to track usage: ${error.message}`);

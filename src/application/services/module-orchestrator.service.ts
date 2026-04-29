@@ -190,7 +190,7 @@ export class ModuleOrchestratorService implements OnApplicationBootstrap {
                     module,
                     tier,
                     name,
-                });
+});
             }
         }
 

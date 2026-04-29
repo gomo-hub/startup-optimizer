@@ -1,0 +1,37 @@
+# Bloqueio de arquivos de midia/binarios para a IA (Evitar erro UTF-8 e loop)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+*.pdf
+*.ttf
+*.woff
+*.woff2
+*.mp4
+*.mp3
+*.mov
+*.zip
+*.tar.gz
+*.sqlite
+*.sqlite3
+*.db
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Pastas de build, dependencias e plataformas
+.next/
+node_modules/
+dist/
+build/
+out/
+.expo/
+coverage/
+.turbo/
+ios/
+android/

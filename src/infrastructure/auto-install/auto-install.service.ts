@@ -21,12 +21,15 @@ export class AutoInstallService implements OnModuleInit {
     private readonly logger = new Logger(AutoInstallService.name);
 
     constructor(
-        private readonly dataSource: DataSource,
         private readonly dependencyChecker: DependencyCheckerService,
         private readonly migrationService: MigrationService,
     ) { }
 
     async onModuleInit(): Promise<void> {
+        if (process.env.GOMO_AUTO_INSTALL === 'false') {
+            this.logger?.log?.('GOMO_AUTO_INSTALL=false — skipping auto-install (P2-1)');
+            return;
+        }
         await this.install();
     }
 
